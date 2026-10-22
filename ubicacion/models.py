@@ -7,5 +7,5 @@ class Ubicacion(models.Model):
 
     ubi_codigo =models.CharField(max_length=20)
     ubi_pasillo =models.CharField(max_length=20)
-
-    def __str__(self): return f"^{self.ubi_codigo}-{self.fk_alma}"
+    
+def __str__(self): return f"{self.ubi_codigo}-{self.fk_alma}"
