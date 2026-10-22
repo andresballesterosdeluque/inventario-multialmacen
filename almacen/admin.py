@@ -9,5 +9,5 @@ class UbicacionInline(admin.TabularInline):
 @admin.register(Almacen)
 class AlmacenAdmin(admin.ModelAdmin):
         list_display = ('id', 'alm_nombre', 'alm_direccion')
-        search_fields = ('alm_nombre',)
+       list_filter = ('alm_nombre',)
         inlines = [UbicacionInline]
