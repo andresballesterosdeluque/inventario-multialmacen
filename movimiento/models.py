@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import ManyToManyField
 
 from almacen.models import Almacen
 
@@ -12,4 +13,7 @@ class Movimiento (models.Model):
     mov_fecha=models.DateTimeField(auto_now_add=True)
 
     mov_responsable = models.CharField(max_length=100)
+
+    lotes = ManyToManyField('lote.Lote', through='detalle_movimiento.DetalleMovimiento')
     def __str__(self):return f"{self.mov_tipo}-{self.id} "
+    
