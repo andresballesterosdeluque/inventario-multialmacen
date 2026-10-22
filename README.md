@@ -1,4 +1,4 @@
-cat > README.md <<'EOF'
+
 # Sistema de Inventario - Multialmacén
 
 Sistema de información desarrollado con Django para gestionar el inventario de varios almacenes: almacenes, ubicaciones, categorías, artículos, lotes y movimientos de entrada y salida.
@@ -146,4 +146,4 @@ inventario-multialmacen/
 - Diagrama de casos de uso: `docs/diagrama_actores.png`
 
 - Diagrama entidad-relación: `docs/diagrama_er.png`
-EOF
+
