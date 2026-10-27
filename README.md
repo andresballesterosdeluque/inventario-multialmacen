@@ -1,149 +1,136 @@
+# Sistema de inventario multialmacén
 
-# Sistema de Inventario - Multialmacén
+Proyecto de Programación Avanzada (Uniguajira), Grupo 1.
 
-Sistema de información desarrollado con Django para gestionar el inventario de varios almacenes: almacenes, ubicaciones, categorías, artículos, lotes y movimientos de entrada y salida.
+Es un sistema hecho en Django para llevar el control de los productos que entran y salen de las bodegas de una empresa que tiene varios almacenes. Se guardan los artículos, sus lotes, en qué almacén y estante está cada lote, y cada movimiento de entrada o salida. Todo se maneja desde el panel de administración de Django (`/admin/`).
 
-Toda la información se registra desde el panel de administración de Django.
+## Integrantes
 
-| | |
-|---|---|
-| Estudiantes: | Andrés Felipe Ballesteros, Temistocle Atencio, Alain Suárez |
-| Materia : | Programación Avanzada |
-| Docente : | Brayan Otero |
+- Temistocle Eisyanior Atencio Ipuana
+- Alain Manuel Suarez Vanegas
+- Andrés Felipe Ballesteros De Luquez
 
----
+## Qué usamos
 
-## 1. Qué hace el sistema
-
-- Registra almacenes y sus ubicaciones (código y pasillo).
-
-- Clasifica los artículos por categoría.
-
-- Controla los lotes de cada artículo: cantidad, almacén y fecha de vencimiento.
-
-- Registra movimientos de entrada y salida por almacén, con el detalle de los lotes afectados.
-
----
-
-## 2. Modelo de datos
-
-Cada tabla del diagrama es un modelo de Django y vive en su propia app.
-
-| App | Modelo | Descripción |
-|---|---|---|
-| `almacen` | Almacen | Almacenes físicos |
-| `ubicacion` | Ubicacion | Entidad débil de Almacen |
-| `categoria` | Categoria | Clasificación de los artículos |
-| `articulo_core` | Articulo | Productos del inventario |
-| `lote` | Lote | Entidad débil de Articulo (también asociada a un Almacen) |
-| `movimiento` | Movimiento | Entradas y salidas por almacén |
-| `detalle_movimiento` | DetalleMovimiento | Tabla intermedia de la relación N:M entre Movimiento y Lote |
-
-**Nota:** la app del artículo se llama `articulo_core`, pero la clase del modelo es `Articulo`.
-
-### Relaciones
-
-- Categoría (1) → (N) Artículo
-
-- Almacén (1) → (N) Ubicación (entidad débil)
-
-- Artículo (1) → (N) Lote (entidad débil)
-
-- Almacén (1) → (N) Movimiento
-
-- Movimiento (N) ↔ (N) Lote, resuelta con la tabla intermedia DetalleMovimiento
-
-### Inlines en el admin
-
-Las entidades débiles y la tabla intermedia se registran con inline dentro del formulario de su dueño:
-
-- Ubicaciones dentro de Almacén
-
-- Lotes dentro de Artículo
-
-- Detalles de movimiento dentro de Movimiento
-
----
-
-## 3. Versiones tecnológicas que se usan
-
-- Python 3.14.8
-
+- Python 3.14
 - Django 6.1.2
+- SQLite (el archivo `db.sqlite3` ya viene con datos de prueba)
 
-- SQLite3
+## Quién usa el sistema
 
----
+| Actor | Qué hace |
+|---|---|
+| Administrador | Gestiona usuarios, gestiona almacenes y consulta el reporte de movimientos |
+| Jefe de bodega | Gestiona artículos, gestiona lotes y consulta el stock por almacén |
+| Bodeguero | Registra entradas, registra salidas y consulta la ubicación de un lote |
 
-## 4. Instalación y ejecución
+## Las tablas
 
-**Paso 1.** Clonar el repositorio:
+Cada tabla del diagrama es un modelo y está en su propia app:
 
-```bash
+| App | Modelo | Para qué sirve |
+|---|---|---|
+| almacenes | Almacen | Las bodegas de la empresa |
+| ubicaciones | Ubicacion | Los estantes de cada almacén |
+| categorias | Categoria | Para clasificar los artículos |
+| articulos | Articulo | Los productos |
+| lotes | Lote | Los lotes de cada artículo |
+| movimientos | Movimiento | Las entradas y salidas |
+| detalles_movimiento | DetalleMovimiento | Une cada movimiento con sus lotes y guarda la cantidad |
+
+Relaciones:
+
+- Un almacén tiene muchas ubicaciones.
+- Una ubicación guarda muchos lotes.
+- Una categoría tiene muchos artículos.
+- Un artículo tiene muchos lotes.
+- Un movimiento puede tener muchos lotes y un lote puede estar en muchos movimientos. Esto se resuelve con la tabla DetalleMovimiento.
+
+El stock no se guarda en una columna. Se calcula sumando las entradas y restando las salidas de cada lote.
+
+## Panel de administración
+
+- Las 7 tablas están registradas en el admin, con lista, búsqueda y filtros.
+- Las ubicaciones se agregan dentro del formulario del almacén.
+- Los lotes se agregan dentro del formulario del artículo.
+- Los detalles (lote y cantidad) se agregan dentro del formulario del movimiento.
+- Cada lote muestra su stock actual y cada artículo su stock total.
+- Si una salida es mayor que el stock del lote, el admin muestra un error y no la guarda.
+
+## Cómo ejecutarlo
+
+1. Clonar el repositorio:
+
+```
 git clone https://github.com/andresballesterosdeluque/inventario-multialmacen.git
 cd inventario-multialmacen
 ```
 
-**Paso 2.** Crear y activar el entorno virtual:
+2. Crear y activar el entorno virtual (PowerShell):
 
-```bash
-python -m venv venv
-source venv/Scripts/activate   # Git Bash (Windows)
+```
+py -m venv venv
+venv\Scripts\Activate.ps1
 ```
 
-**Paso 3.** Instalar las dependencias:
+3. Instalar las dependencias:
 
-```bash
-pip install -r requirements.txt
+```
+python -m pip install -r requirements.txt
 ```
 
-**Paso 4.** Ejecutar el servidor (la base `db.sqlite3` ya incluye los datos de prueba):
+4. Crear las tablas:
 
-```bash
+```
+python manage.py migrate
+```
+
+5. Cargar los datos de prueba (3 por tabla, se puede correr varias veces sin que se repitan):
+
+```
+python manage.py cargar_demo
+```
+
+6. Iniciar el servidor:
+
+```
 python manage.py runserver
 ```
 
-**Paso 5.** Entrar al panel de administración:
+7. Entrar a http://127.0.0.1:8000/admin/
 
-http://127.0.0.1:8000/admin/
+## Usuario del administrador
 
-> **Importante:** hay que añadir `/admin/` al final de la dirección. Si se entra solo con http://127.0.0.1:8000 no aparece nada, porque la página principal no tiene contenido.
+- Usuario: admin
+- Contraseña: Inventario2026
 
----
+## Diagramas
 
-## 5. Credenciales del administrador
+Están en la carpeta `docs/`.
 
-| | |
-|---|---|
-| **Usuario** | `admin` |
-| **Clave** | `admin123` |
+Casos de uso (`docs/diagrama_actores.png`):
 
----
+![Diagrama de casos de uso](docs/diagrama_actores.png)
 
-## 6. Estructura del proyecto
+Entidad-relación (`docs/diagrama_er.png`):
+
+![Diagrama entidad-relación](docs/diagrama_er.png)
+
+## Carpetas
 
 ```
 inventario-multialmacen/
-├── configuracion/        # settings.py, urls.py
-├── almacen/              # modelo Almacen
-├── ubicacion/            # modelo Ubicacion (entidad débil de Almacen)
-├── categoria/            # modelo Categoria
-├── articulo_core/        # modelo Articulo
-├── lote/                 # modelo Lote (entidad débil de Articulo)
-├── movimiento/           # modelo Movimiento
-├── detalle_movimiento/   # modelo DetalleMovimiento (tabla intermedia del N:M)
-├── docs/                 # diagramas: diagrama_actores.png, diagrama_er.png
+├── config/               # settings.py, urls.py
+├── almacenes/            # modelo Almacen
+├── ubicaciones/          # modelo Ubicacion (entidad débil de Almacen)
+├── categorias/           # modelo Categoria
+├── articulos/            # modelo Articulo
+├── lotes/                # modelo Lote (entidad débil de Articulo)
+├── movimientos/          # modelo Movimiento
+├── detalles_movimiento/  # modelo DetalleMovimiento (tabla intermedia del N:M)
+├── docs/                 # diagramas: diagrama_actores.png y diagrama_er.png
 ├── db.sqlite3            # base de datos con los datos de prueba
 ├── manage.py
 ├── requirements.txt
 └── README.md
 ```
-
----
-
-## 7. Diagramas
-
-- Diagrama de casos de uso: `docs/diagrama_actores.png`
-
-- Diagrama entidad-relación: `docs/diagrama_er.png`
-
