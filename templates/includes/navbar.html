@@ -1,0 +1,24 @@
+<header class="barra-superior">
+  <div class="barra-interna">
+    {% if user.is_authenticated %}
+    <button class="btn-menu d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuMovil" aria-controls="menuMovil" aria-label="Abrir el menú">
+      {% include "includes/icono.html" with nombre="menu" %}
+    </button>
+    {% endif %}
+    <a class="marca" href="{% url 'inicio' %}" aria-label="InvenLote, ir al inicio">
+      {% include "includes/logo.html" with blanco=True %}
+    </a>
+    {% if user.is_authenticated %}
+    <div class="usuario">
+      <div class="usuario-datos d-none d-sm-block">
+        <div class="usuario-nombre">{{ user.get_full_name|default:user.username }}</div>
+        <div class="usuario-rol">{{ rol }}</div>
+      </div>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-salir">{% include "includes/icono.html" with nombre="salir" %}<span>Salir</span></button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</header>

@@ -1,0 +1,4 @@
+{% extends "crud/formulario.html" %}
+{% block title %}{% if object %}Editar lote{% else %}Nuevo lote{% endif %}{% endblock %}
+{% block titulo_pagina %}{% if object %}Editar lote{% else %}Nuevo lote{% endif %}{% endblock %}
+{% block cancelar %}{% url 'lotes:lista' %}{% endblock %}

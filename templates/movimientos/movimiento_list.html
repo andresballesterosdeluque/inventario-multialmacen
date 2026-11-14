@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Movimientos{% endblock %}
+{% block contenido %}
+<div class="encabezado">
+  <div><h1>Movimientos</h1><p class="subtitulo">Entradas y salidas de mercancía. Usa los filtros para sacar un reporte.</p></div>
+  {% if perms.movimientos.add_movimiento %}<a class="btn btn-accion" href="{% url 'movimientos:crear' %}">{% include "includes/icono.html" with nombre="plus" %}Registrar movimiento</a>{% endif %}
+</div>
+
+<form method="get" class="card filtros mb-3" role="search">
+  <div class="card-body">
+    {% if filtro.non_field_errors %}<div class="alert alert-danger">{% for e in filtro.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4"><label class="form-label" for="{{ filtro.q.id_for_label }}">Buscar</label>{{ filtro.q }}</div>
+      <div class="col-6 col-md-2"><label class="form-label" for="{{ filtro.tipo.id_for_label }}">Tipo</label>{{ filtro.tipo }}</div>
+      <div class="col-6 col-md-3"><label class="form-label" for="{{ filtro.almacen.id_for_label }}">Almacén</label>{{ filtro.almacen }}</div>
+      <div class="col-6 col-md-3"><label class="form-label" for="{{ filtro.desde.id_for_label }}">Desde</label>{{ filtro.desde }}</div>
+      <div class="col-6 col-md-3"><label class="form-label" for="{{ filtro.hasta.id_for_label }}">Hasta</label>{{ filtro.hasta }}</div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{% include "includes/icono.html" with nombre="search" %}Filtrar</button>
+        <a class="btn btn-texto" href="{% url 'movimientos:lista' %}">Limpiar</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="card tabla-tarjeta">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>N.º</th><th>Fecha</th><th>Tipo</th><th>Observación</th><th class="text-end">Artículos</th><th class="text-end">Unidades</th><th class="text-end">Acciones</th></tr></thead>
+      <tbody>
+        {% for m in page_obj %}
+        <tr>
+          <td>#{{ m.pk }}</td>
+          <td>{{ m.fecha|date:"d/m/Y" }}</td>
+          <td>{% if m.tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</td>
+          <td>{{ m.observacion|default:"—" }}</td>
+          <td class="text-end">{{ m.total_articulos }}</td>
+          <td class="text-end">{{ m.total_unidades|default:0 }}</td>
+          <td class="text-end">
+            {% url 'movimientos:detalle' m.pk as url_ver %}{% url 'movimientos:editar' m.pk as url_editar %}{% url 'movimientos:eliminar' m.pk as url_eliminar %}
+            {% include "includes/acciones_fila.html" with url_ver=url_ver url_editar=url_editar url_eliminar=url_eliminar puede_editar=perms.movimientos.change_movimiento puede_eliminar=perms.movimientos.delete_movimiento %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="vacio">No hay movimientos con esos filtros.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include "includes/paginacion.html" %}
+{% endblock %}

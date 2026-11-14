@@ -1,0 +1,4 @@
+{% extends "crud/confirmar_eliminar.html" %}
+{% block nombre_modelo %}el lote{% endblock %}
+{% block aviso %}<p class="texto-suave">Un lote que ya tiene movimientos no se puede eliminar.</p>{% endblock %}
+{% block cancelar %}{% url 'lotes:lista' %}{% endblock %}

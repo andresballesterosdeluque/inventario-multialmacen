@@ -1,0 +1,56 @@
+{# Menú lateral. Cada enlace aparece solo si el rol del usuario tiene permiso para esa pantalla. #}
+{% with app=request.resolver_match.app_name %}
+<nav class="menu" aria-label="Menú principal">
+  <a class="menu-link {% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">
+    {% include "includes/icono.html" with nombre="home" %}<span>Inicio</span>
+  </a>
+
+  <div class="menu-titulo">Operación</div>
+  {% if perms.movimientos.view_movimiento %}
+  <a class="menu-link {% if app == 'movimientos' %}activo{% endif %}" href="{% url 'movimientos:lista' %}">
+    {% include "includes/icono.html" with nombre="flujo" %}<span>Movimientos</span>
+  </a>
+  {% endif %}
+  {% if perms.almacenes.view_almacen %}
+  <a class="menu-link {% if app == 'almacenes' and request.resolver_match.url_name == 'stock' %}activo{% endif %}" href="{% url 'almacenes:stock' %}">
+    {% include "includes/icono.html" with nombre="stock" %}<span>Stock por almacén</span>
+  </a>
+  {% endif %}
+
+  <div class="menu-titulo">Catálogo</div>
+  {% if perms.articulos.view_articulo %}
+  <a class="menu-link {% if app == 'articulos' %}activo{% endif %}" href="{% url 'articulos:lista' %}">
+    {% include "includes/icono.html" with nombre="box" %}<span>Artículos</span>
+  </a>
+  {% endif %}
+  {% if perms.lotes.view_lote %}
+  <a class="menu-link {% if app == 'lotes' %}activo{% endif %}" href="{% url 'lotes:lista' %}">
+    {% include "includes/icono.html" with nombre="apilado" %}<span>Lotes</span>
+  </a>
+  {% endif %}
+  {% if perms.categorias.view_categoria %}
+  <a class="menu-link {% if app == 'categorias' %}activo{% endif %}" href="{% url 'categorias:lista' %}">
+    {% include "includes/icono.html" with nombre="etiqueta" %}<span>Categorías</span>
+  </a>
+  {% endif %}
+
+  <div class="menu-titulo">Bodegas</div>
+  {% if perms.almacenes.view_almacen %}
+  <a class="menu-link {% if app == 'almacenes' and request.resolver_match.url_name != 'stock' %}activo{% endif %}" href="{% url 'almacenes:lista' %}">
+    {% include "includes/icono.html" with nombre="almacen" %}<span>Almacenes</span>
+  </a>
+  {% endif %}
+  {% if perms.ubicaciones.view_ubicacion %}
+  <a class="menu-link {% if app == 'ubicaciones' %}activo{% endif %}" href="{% url 'ubicaciones:lista' %}">
+    {% include "includes/icono.html" with nombre="pin" %}<span>Ubicaciones</span>
+  </a>
+  {% endif %}
+
+  {% if user.is_staff %}
+  <div class="menu-titulo">Sistema</div>
+  <a class="menu-link" href="{% url 'admin:index' %}">
+    {% include "includes/icono.html" with nombre="candado" %}<span>Panel de administración</span>
+  </a>
+  {% endif %}
+</nav>
+{% endwith %}

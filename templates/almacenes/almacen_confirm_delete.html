@@ -1,0 +1,4 @@
+{% extends "crud/confirmar_eliminar.html" %}
+{% block nombre_modelo %}el almacén{% endblock %}
+{% block aviso %}<p class="texto-suave">Si el almacén tiene ubicaciones con lotes, no se podrá eliminar.</p>{% endblock %}
+{% block cancelar %}{% url 'almacenes:lista' %}{% endblock %}

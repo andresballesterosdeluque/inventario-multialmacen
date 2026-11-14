@@ -1,0 +1,4 @@
+{% extends "crud/confirmar_eliminar.html" %}
+{% block nombre_modelo %}la categoría{% endblock %}
+{% block aviso %}<p class="texto-suave">Si la categoría tiene artículos, no se podrá eliminar.</p>{% endblock %}
+{% block cancelar %}{% url 'categorias:lista' %}{% endblock %}

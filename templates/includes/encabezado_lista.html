@@ -1,0 +1,18 @@
+{# Título de una lista, buscador y botón principal (naranja, solo uno por pantalla). #}
+<div class="encabezado">
+  <div>
+    <h1>{{ titulo }}</h1>
+    {% if subtitulo %}<p class="subtitulo">{{ subtitulo }}</p>{% endif %}
+  </div>
+  {% if permiso %}
+  <a class="btn btn-accion" href="{{ url_nuevo }}">{% include "includes/icono.html" with nombre="plus" %}{{ texto_nuevo }}</a>
+  {% endif %}
+</div>
+<form method="get" class="buscador card" role="search">
+  <div class="card-body">
+    <label class="visually-hidden" for="q">Buscar</label>
+    <input type="search" id="q" name="q" value="{{ q }}" class="form-control" placeholder="{{ placeholder|default:'Buscar…' }}">
+    <button type="submit" class="btn btn-primary">{% include "includes/icono.html" with nombre="search" %}Buscar</button>
+    {% if q %}<a class="btn btn-texto" href="?">Limpiar</a>{% endif %}
+  </div>
+</form>

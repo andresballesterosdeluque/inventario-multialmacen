@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Eliminar movimiento{% endblock %}
+{% block contenido %}
+<div class="encabezado"><h1>Eliminar movimiento #{{ movimiento.pk }}</h1></div>
+<div class="card tarjeta-formulario">
+  <div class="card-body">
+    <p>Vas a eliminar la {{ movimiento.get_tipo_display|lower }} del {{ movimiento.fecha|date:"d/m/Y" }} con {{ filas|length }} artículo{{ filas|length|pluralize }}. Esto cambia el stock de los lotes y no se puede deshacer.</p>
+    <ul>{% for d in filas %}<li>{{ d.lote.codigo }} · {{ d.lote.articulo.nombre }} · {{ d.cantidad }} unidades</li>{% endfor %}</ul>
+    <form method="post">
+      {% csrf_token %}
+      <div class="botones-form">
+        <button type="submit" class="btn btn-peligro">Sí, eliminar</button>
+        <a class="btn btn-texto" href="{% url 'movimientos:detalle' movimiento.pk %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

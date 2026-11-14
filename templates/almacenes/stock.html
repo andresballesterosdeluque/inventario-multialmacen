@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Stock por almacén{% endblock %}
+{% block contenido %}
+<div class="encabezado"><div><h1>Stock por almacén</h1><p class="subtitulo">Unidades que hay ahora en cada lote (entradas menos salidas).</p></div></div>
+
+<form method="get" class="buscador card">
+  <div class="card-body">
+    <label class="visually-hidden" for="almacen">Almacén</label>
+    <select name="almacen" id="almacen" class="form-select" style="max-width:320px">
+      <option value="">Todos los almacenes</option>
+      {% for a in todos %}<option value="{{ a.pk }}" {% if elegido == a.pk|stringformat:"s" %}selected{% endif %}>{{ a.nombre }}</option>{% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">{% include "includes/icono.html" with nombre="search" %}Ver</button>
+  </div>
+</form>
+
+{% for g in grupos %}
+<section class="card tabla-tarjeta mb-3">
+  <h2 class="bloque-titulo">{{ g.almacen.nombre }} <span class="texto-suave fw-normal">· {{ g.total }} unidades</span></h2>
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead><tr><th>Artículo</th><th>Lote</th><th>Ubicación</th><th class="text-end">Stock</th></tr></thead>
+      <tbody>
+        {% for f in g.filas %}
+        <tr><td>{{ f.lote.articulo.nombre }}</td><td>{{ f.lote.codigo }}</td><td>{{ f.lote.ubicacion }}</td>
+          <td class="text-end">{% if f.stock <= 0 %}<span class="estado-salida">{{ f.stock }}</span>{% else %}{{ f.stock }}{% endif %}</td></tr>
+        {% empty %}<tr><td colspan="4" class="vacio">Este almacén no tiene lotes.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% empty %}
+<p class="vacio">No hay almacenes.</p>
+{% endfor %}
+{% endblock %}

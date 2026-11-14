@@ -1,0 +1,13 @@
+{# Dibuja todos los campos de un formulario con el estilo de Bootstrap. #}
+{% if form.non_field_errors %}
+<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+{% endif %}
+{% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+{% for campo in form.visible_fields %}
+<div class="mb-3">
+  <label for="{{ campo.id_for_label }}" class="form-label">{{ campo.label }}</label>
+  {{ campo }}
+  {% if campo.help_text %}<div class="form-text">{{ campo.help_text }}</div>{% endif %}
+  {% for error in campo.errors %}<div class="texto-error">{{ error }}</div>{% endfor %}
+</div>
+{% endfor %}

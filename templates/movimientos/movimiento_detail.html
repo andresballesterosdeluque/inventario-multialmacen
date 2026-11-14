@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Movimiento #{{ movimiento.pk }}{% endblock %}
+{% block contenido %}
+<div class="encabezado">
+  <h1>Movimiento #{{ movimiento.pk }}</h1>
+  <div class="d-flex flex-wrap gap-2">
+    {% if perms.movimientos.change_movimiento %}<a class="btn btn-accion" href="{% url 'movimientos:editar' movimiento.pk %}">{% include "includes/icono.html" with nombre="pencil" %}Editar</a>{% endif %}
+    {% if perms.movimientos.delete_movimiento %}<a class="btn btn-texto" href="{% url 'movimientos:eliminar' movimiento.pk %}">Eliminar</a>{% endif %}
+    <a class="btn btn-texto" href="{% url 'movimientos:lista' %}">Volver a la lista</a>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <dl class="ficha mb-0">
+    <div><dt>Fecha</dt><dd>{{ movimiento.fecha|date:"d/m/Y" }}</dd></div>
+    <div><dt>Tipo</dt><dd>{% if movimiento.tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</dd></div>
+    <div><dt>Total de unidades</dt><dd>{{ total }}</dd></div>
+    <div style="grid-column:1/-1"><dt>Observación</dt><dd>{{ movimiento.observacion|default:"Sin observación" }}</dd></div>
+  </dl>
+</div>
+
+<div class="card tabla-tarjeta">
+  <h2 class="bloque-titulo">Artículos</h2>
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead><tr><th>Lote</th><th>Artículo</th><th>Almacén</th><th>Ubicación</th><th class="text-end">Cantidad</th><th class="text-end">Stock actual del lote</th></tr></thead>
+      <tbody>
+        {% for d in filas %}
+        <tr>
+          <td>{{ d.lote.codigo }}</td><td>{{ d.lote.articulo.nombre }}</td>
+          <td>{{ d.lote.ubicacion.almacen.nombre }}</td><td>{{ d.lote.ubicacion }}</td>
+          <td class="text-end">{{ d.cantidad }}</td><td class="text-end">{{ d.lote.stock_actual }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

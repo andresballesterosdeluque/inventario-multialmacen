@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{# Pantalla de crear o editar de las tablas simples. Cada app pone su título y a dónde vuelve al cancelar. #}
+{% block contenido %}
+<div class="encabezado"><h1>{% block titulo_pagina %}Formulario{% endblock %}</h1></div>
+<div class="card tarjeta-formulario">
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "includes/formulario.html" %}
+      <div class="botones-form">
+        <button type="submit" class="btn btn-accion">Guardar</button>
+        <a class="btn btn-texto" href="{% block cancelar %}{% url 'inicio' %}{% endblock %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

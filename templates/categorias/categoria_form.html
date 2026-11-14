@@ -1,0 +1,4 @@
+{% extends "crud/formulario.html" %}
+{% block title %}{% if object %}Editar categoría{% else %}Nueva categoría{% endif %}{% endblock %}
+{% block titulo_pagina %}{% if object %}Editar categoría{% else %}Nueva categoría{% endif %}{% endblock %}
+{% block cancelar %}{% url 'categorias:lista' %}{% endblock %}

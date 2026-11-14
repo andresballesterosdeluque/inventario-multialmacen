@@ -1,0 +1,60 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Inicio{% endblock %} · InvenLote</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'invenlote/cubo.svg' %}">
+
+  {# Tipografías de la marca: Poppins para títulos e Inter para el texto #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap">
+
+  {# Framework de CSS: Bootstrap 5.3.3 por CDN #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  {# Paleta y ajustes de InvenLote (se carga después de Bootstrap para cambiarle los colores) #}
+  <link rel="stylesheet" href="{% static 'invenlote/app.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include "includes/iconos.html" %}
+  {% include "includes/navbar.html" %}
+
+  <div class="estructura">
+    {% if user.is_authenticated %}
+    {# Menú lateral (aside): fijo en pantallas grandes #}
+    <aside class="lateral d-none d-lg-block">
+      {% include "includes/menu.html" %}
+    </aside>
+
+    {# En el celular el mismo menú sale como panel deslizable #}
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menuMovil" aria-labelledby="menuMovilTitulo">
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title h6 mb-0" id="menuMovilTitulo">Menú</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+      </div>
+      <div class="offcanvas-body p-0">
+        {% include "includes/menu.html" %}
+      </div>
+    </div>
+    {% endif %}
+
+    <main class="contenido">
+      <div class="contenido-interno">
+        {% include "includes/mensajes.html" %}
+        {% block contenido %}{% endblock %}
+      </div>
+    </main>
+  </div>
+
+  <footer class="pie">
+    {% include "includes/logo.html" with blanco=True %}
+    <span class="pie-texto">Sistema de inventario multialmacén · Programación Avanzada · Uniguajira</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

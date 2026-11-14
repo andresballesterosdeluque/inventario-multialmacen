@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Sin permiso{% endblock %}
+{% block contenido %}
+<div class="encabezado"><h1>No tienes permiso para esto</h1></div>
+<div class="card tarjeta-formulario">
+  <div class="card-body">
+    <p>Tu rol ({{ rol|default:"sin rol" }}) no puede entrar a esta pantalla o hacer esta acción. Si crees que es un error, habla con el administrador.</p>
+    <a class="btn btn-primary" href="{% url 'inicio' %}">Volver al inicio</a>
+  </div>
+</div>
+{% endblock %}

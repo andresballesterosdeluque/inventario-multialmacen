@@ -1,0 +1,4 @@
+{% extends "crud/confirmar_eliminar.html" %}
+{% block nombre_modelo %}el artículo{% endblock %}
+{% block aviso %}<p class="texto-suave">Se eliminan también los lotes del artículo, siempre que no tengan movimientos.</p>{% endblock %}
+{% block cancelar %}{% url 'articulos:lista' %}{% endblock %}

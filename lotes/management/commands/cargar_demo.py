@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -52,4 +53,5 @@ class Command(BaseCommand):
         DetalleMovimiento.objects.get_or_create(movimiento=m2, lote=l2, defaults={"cantidad": 30})
         DetalleMovimiento.objects.get_or_create(movimiento=m3, lote=l1, defaults={"cantidad": 10})
 
+        call_command("crear_roles", stdout=self.stdout)
         self.stdout.write(self.style.SUCCESS("Datos de demostración cargados."))

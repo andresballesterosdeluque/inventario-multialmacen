@@ -1,0 +1,15 @@
+{# Logo de InvenLote. Con blanco=True usa la versión blanca (para fondos azules). #}
+<span class="logo {% if blanco %}logo-blanco{% endif %}">
+  <svg class="logo-cubo" viewBox="0 0 259.8 300" aria-hidden="true" focusable="false">
+    {% if blanco %}
+    <polygon fill="#FFFFFF" fill-opacity="1" points="0,75 129.9,0 259.8,75 129.9,150"/>
+    <polygon fill="#FFFFFF" fill-opacity=".8" points="0,75 129.9,150 129.9,300 0,225"/>
+    <polygon fill="#FFFFFF" fill-opacity=".6" points="129.9,150 259.8,75 259.8,225 129.9,300"/>
+    {% else %}
+    <polygon fill="#F28C1B" points="0,75 129.9,0 259.8,75 129.9,150"/>
+    <polygon fill="#005198" points="0,75 129.9,150 129.9,300 0,225"/>
+    <polygon fill="#003A73" points="129.9,150 259.8,75 259.8,225 129.9,300"/>
+    {% endif %}
+  </svg>
+  <span class="logo-texto"><span class="logo-inven">Inven</span><span class="logo-lote">Lote</span></span>
+</span>

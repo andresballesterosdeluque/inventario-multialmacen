@@ -1,0 +1,19 @@
+{# Una fila de artículo en el formulario de movimiento: lote, cantidad y quitar. #}
+<div class="fila-detalle" {% if f.DELETE.value %}hidden{% endif %}>
+  {% for h in f.hidden_fields %}{{ h }}{% endfor %}
+  <div>
+    <label class="visually-hidden" for="{{ f.lote.id_for_label }}">Lote</label>
+    {{ f.lote }}
+    {% for e in f.lote.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
+  </div>
+  <div>
+    <label class="visually-hidden" for="{{ f.cantidad.id_for_label }}">Cantidad</label>
+    {{ f.cantidad }}
+    {% for e in f.cantidad.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
+  </div>
+  <div>
+    <button type="button" class="btn btn-texto btn-quitar" aria-label="Quitar este artículo">{% include "includes/icono.html" with nombre="trash" %}Quitar</button>
+    <span class="d-none">{{ f.DELETE }}</span>
+  </div>
+  {% for e in f.non_field_errors %}<div class="texto-error" style="grid-column:1/-1">{{ e }}</div>{% endfor %}
+</div>

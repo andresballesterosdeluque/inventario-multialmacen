@@ -1,0 +1,4 @@
+{% extends "crud/confirmar_eliminar.html" %}
+{% block nombre_modelo %}la ubicación{% endblock %}
+{% block aviso %}<p class="texto-suave">Si en la ubicación hay lotes, no se podrá eliminar.</p>{% endblock %}
+{% block cancelar %}{% url 'ubicaciones:lista' %}{% endblock %}

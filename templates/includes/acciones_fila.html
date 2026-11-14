@@ -1,0 +1,6 @@
+{# Íconos de editar y eliminar de cada fila. Solo salen si el rol tiene el permiso. #}
+<div class="acciones">
+  {% if url_ver %}<a class="icono-accion" href="{{ url_ver }}" title="Ver detalle" aria-label="Ver detalle">{% include "includes/icono.html" with nombre="watch" %}</a>{% endif %}
+  {% if puede_editar %}<a class="icono-accion" href="{{ url_editar }}" title="Editar" aria-label="Editar">{% include "includes/icono.html" with nombre="pencil" %}</a>{% endif %}
+  {% if puede_eliminar %}<a class="icono-accion peligro" href="{{ url_eliminar }}" title="Eliminar" aria-label="Eliminar">{% include "includes/icono.html" with nombre="trash" %}</a>{% endif %}
+</div>

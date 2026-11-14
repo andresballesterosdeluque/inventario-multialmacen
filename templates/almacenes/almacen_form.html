@@ -1,0 +1,4 @@
+{% extends "crud/formulario.html" %}
+{% block title %}{% if object %}Editar almacén{% else %}Nuevo almacén{% endif %}{% endblock %}
+{% block titulo_pagina %}{% if object %}Editar almacén{% else %}Nuevo almacén{% endif %}{% endblock %}
+{% block cancelar %}{% url 'almacenes:lista' %}{% endblock %}

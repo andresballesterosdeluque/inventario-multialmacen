@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Entrar{% endblock %}
+{% block contenido %}
+<div class="pagina-login">
+  <div class="card tarjeta-login">
+    <div class="card-body">
+      <div class="login-logo">{% include "includes/logo.html" %}</div>
+      <h1 class="h5 text-center mb-3">Entra a tu cuenta</h1>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">Usuario o contraseña incorrectos.</div>{% endif %}
+        <div class="mb-3">
+          <label class="form-label" for="id_username">Usuario</label>
+          <input type="text" name="username" id="id_username" class="form-control" autocomplete="username" autofocus required value="{{ form.username.value|default:'' }}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="id_password">Contraseña</label>
+          <input type="password" name="password" id="id_password" class="form-control" autocomplete="current-password" required>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn btn-accion">Entrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

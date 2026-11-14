@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{# Pide confirmación antes de borrar. Cada app dice qué es el registro y a dónde vuelve. #}
+{% block title %}Eliminar{% endblock %}
+{% block contenido %}
+<div class="encabezado"><h1>Eliminar {% block nombre_modelo %}registro{% endblock %}</h1></div>
+<div class="card tarjeta-formulario">
+  <div class="card-body">
+    <p class="mb-2">¿Seguro que quieres eliminar <strong>{{ object }}</strong>?</p>
+    <p class="texto-suave">Esta acción no se puede deshacer.</p>
+    {% block aviso %}{% endblock %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="botones-form">
+        <button type="submit" class="btn btn-peligro">Sí, eliminar</button>
+        <a class="btn btn-texto" href="{% block cancelar %}{% url 'inicio' %}{% endblock %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

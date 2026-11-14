@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<div class="encabezado"><h1>{{ titulo }}</h1></div>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  <div class="card tarjeta-formulario tarjeta-formulario-ancha mb-3">
+    <div class="card-body">
+      {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+      <div class="row g-3">
+        {% for campo in form.visible_fields %}
+        <div class="{% if campo.name == 'observacion' %}col-12{% else %}col-md-6{% endif %}">
+          <label for="{{ campo.id_for_label }}" class="form-label">{{ campo.label }}</label>
+          {{ campo }}
+          {% for error in campo.errors %}<div class="texto-error">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card tarjeta-formulario-ancha">
+    <div class="card-body">
+      <h2 class="h5">Artículos del movimiento</h2>
+      <p class="texto-suave">Elige el lote y la cantidad. En una salida no puedes sacar más de lo que hay en el lote.</p>
+      {{ formset.management_form }}
+      {% if formset.non_form_errors %}<div class="alert alert-danger" role="alert">{% for e in formset.non_form_errors %}{{ e }} {% endfor %}</div>{% endif %}
+      <div id="filas-detalle">
+        {% for f in formset %}{% include "includes/fila_detalle.html" %}{% endfor %}
+      </div>
+      <button type="button" class="btn btn-primary" id="agregar-fila">{% include "includes/icono.html" with nombre="plus" %}Agregar otro artículo</button>
+    </div>
+  </div>
+
+  <div class="botones-form">
+    <button type="submit" class="btn btn-accion">Guardar movimiento</button>
+    <a class="btn btn-texto" href="{% if movimiento.pk %}{% url 'movimientos:detalle' movimiento.pk %}{% else %}{% url 'movimientos:lista' %}{% endif %}">Cancelar</a>
+  </div>
+</form>
+
+<template id="plantilla-fila">{% with f=formset.empty_form %}{% include "includes/fila_detalle.html" %}{% endwith %}</template>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'invenlote/detalles.js' %}"></script>{% endblock %}

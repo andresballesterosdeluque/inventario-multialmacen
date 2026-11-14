@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block contenido %}
+<div class="encabezado">
+  <div><h1>Hola, {{ user.get_full_name|default:user.username }}</h1><p class="subtitulo">Tu rol: {{ rol }}. Este es el resumen del inventario.</p></div>
+  {% if perms.movimientos.add_movimiento %}<a class="btn btn-accion" href="{% url 'movimientos:crear' %}">{% include "includes/icono.html" with nombre="plus" %}Registrar movimiento</a>
+  {% elif perms.articulos.add_articulo %}<a class="btn btn-accion" href="{% url 'articulos:crear' %}">{% include "includes/icono.html" with nombre="plus" %}Nuevo artículo</a>
+  {% elif perms.almacenes.add_almacen %}<a class="btn btn-accion" href="{% url 'almacenes:crear' %}">{% include "includes/icono.html" with nombre="plus" %}Nuevo almacén</a>{% endif %}
+</div>
+
+<div class="resumen">
+  <a class="dato" href="{% if perms.articulos.view_articulo %}{% url 'articulos:lista' %}{% else %}#{% endif %}"><div class="dato-numero">{{ total_articulos }}</div><div class="dato-nombre">Artículos</div></a>
+  <a class="dato" href="{% if perms.lotes.view_lote %}{% url 'lotes:lista' %}{% else %}#{% endif %}"><div class="dato-numero">{{ total_lotes }}</div><div class="dato-nombre">Lotes</div></a>
+  <a class="dato" href="{% if perms.almacenes.view_almacen %}{% url 'almacenes:lista' %}{% else %}#{% endif %}"><div class="dato-numero">{{ total_almacenes }}</div><div class="dato-nombre">Almacenes</div></a>
+  <a class="dato" href="{% if perms.movimientos.view_movimiento %}{% url 'movimientos:lista' %}{% else %}#{% endif %}"><div class="dato-numero">{{ total_movimientos }}</div><div class="dato-nombre">Movimientos</div></a>
+</div>
+
+<div class="bloques">
+  <section class="card tabla-tarjeta">
+    <h2 class="bloque-titulo">Últimos movimientos</h2>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <tbody>
+          {% for m in ultimos %}
+          <tr>
+            <td>{% if perms.movimientos.view_movimiento %}<a href="{% url 'movimientos:detalle' m.pk %}">#{{ m.pk }}</a>{% else %}#{{ m.pk }}{% endif %}</td>
+            <td>{{ m.fecha|date:"d/m/Y" }}</td>
+            <td>{% if m.tipo == "ENTRADA" %}<span class="estado-entrada">Entrada</span>{% else %}<span class="estado-salida">Salida</span>{% endif %}</td>
+            <td class="texto-suave">{{ m.observacion|truncatechars:40 }}</td>
+          </tr>
+          {% empty %}<tr><td class="vacio">Todavía no hay movimientos.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card tabla-tarjeta">
+    <h2 class="bloque-titulo">Lotes vencidos o por vencer (30 días)</h2>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <tbody>
+          {% for lote in por_vencer %}
+          <tr>
+            <td>{{ lote.codigo }}</td><td>{{ lote.articulo.nombre }}</td>
+            <td>{% include "includes/vencimiento.html" %}</td>
+          </tr>
+          {% empty %}<tr><td class="vacio">No hay lotes por vencer.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
