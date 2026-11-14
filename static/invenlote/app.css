@@ -118,7 +118,7 @@ a:hover { text-decoration: underline; }
 
 /* Tarjetas del inicio */
 .resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-.dato { background: #fff; border: 1px solid var(--il-borde); border-radius: 5px; padding: 1rem 1.1rem; border-top: 4px solid var(--il-azul); display: block; color: var(--il-texto); }
+.dato { background: #fff; border: 1px solid var(--il-borde); border-radius: 5px; padding: 1rem 1.1rem; display: block; color: var(--il-texto); }
 a.dato:hover { text-decoration: none; border-color: var(--il-azul); }
 .dato-numero { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 2rem; color: var(--il-azul-oscuro); line-height: 1.1; }
 .dato-nombre { color: var(--il-suave); font-size: .9rem; }
