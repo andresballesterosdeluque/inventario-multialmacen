@@ -65,7 +65,7 @@ a:hover { text-decoration: underline; }
 .menu-titulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; font-weight: 600; color: var(--il-suave); padding: 1rem 1.25rem .35rem; }
 .menu-link { display: flex; align-items: center; padding: .55rem 1.25rem; color: var(--il-texto); font-weight: 500; border-left: 3px solid transparent; }
 .menu-link:hover { background: var(--il-gris); text-decoration: none; }
-.menu-link.activo { background: #E6EEF7; color: var(--il-azul-oscuro); border-left-color: var(--il-naranja); font-weight: 600; }
+.menu-link.activo { background: #E6EEF7; color: var(--il-azul-oscuro); font-weight: 600; }
 .contenido { min-width: 0; padding: 1.5rem 1rem 2.5rem; }
 @media (min-width: 768px) { .contenido { padding: 2rem 2rem 3rem; } }
 .contenido-interno { max-width: 1100px; margin: 0 auto; }
