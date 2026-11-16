@@ -19,8 +19,10 @@ def _revisar_stock(lotes_ids):
             )
 
 
-def guardar_movimiento(form, formset):
+def guardar_movimiento(form, formset, usuario):
     """Guarda el movimiento y sus detalles en un solo paso.
+
+    Si el movimiento es nuevo, queda a nombre del usuario que lo registra.
 
     Si algún lote queda con stock negativo (por ejemplo, al bajar una entrada que ya
     se había sacado), se deshace todo y se lanza StockNegativo.
@@ -31,7 +33,10 @@ def guardar_movimiento(form, formset):
             DetalleMovimiento.objects.filter(fk_mov=form.instance).values_list("fk_lot_id", flat=True)
         )
     with transaction.atomic():
-        movimiento = form.save()
+        movimiento = form.save(commit=False)
+        if movimiento.pk is None:
+            movimiento.fk_usu = usuario
+        movimiento.save()
         formset.instance = movimiento
         formset.save()
         lotes_despues = set(movimiento.detallemovimiento_set.values_list("fk_lot_id", flat=True))

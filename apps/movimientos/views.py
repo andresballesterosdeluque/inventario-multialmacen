@@ -60,7 +60,7 @@ def lista(request):
 @permission_required("movimientos.view_movimiento", raise_exception=True)
 def detalle(request, pk):
     """Un movimiento con todos sus artículos."""
-    movimiento = get_object_or_404(Movimiento, pk=pk)
+    movimiento = get_object_or_404(Movimiento.objects.select_related("fk_usu"), pk=pk)
     filas = movimiento.detallemovimiento_set.select_related(
         "fk_lot__fk_art", "fk_lot__fk_ubi__fk_alm"
     ).order_by("pk")
@@ -80,7 +80,7 @@ def _formulario(request, movimiento, titulo):
         formset_ok = formset.is_valid()
         if form_ok and formset_ok:
             try:
-                guardado = guardar_movimiento(form, formset)
+                guardado = guardar_movimiento(form, formset, request.user)
             except StockNegativo as error:
                 messages.error(request, str(error))
             else:

@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -18,7 +18,8 @@ from .models import Movimiento
 class MovimientosCrudTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("crear_roles", verbosity=0)
+        call_command("crear_usuarios", verbosity=0)
+        cls.bodeguero = get_user_model().objects.get(username="bodeguero")
         almacen = Almacen.objects.create(alm_nombre="Norte", alm_direccion="Calle 1")
         ubicacion = Ubicacion.objects.create(fk_alm=almacen, ubi_estante="E1", ubi_nivel="1")
         categoria = Categoria.objects.create(cat_nombre="Herramientas")
@@ -77,9 +78,9 @@ class MovimientosCrudTests(TestCase):
         self.assertEqual(Movimiento.objects.count(), 0)
 
     def test_no_se_borra_una_entrada_que_ya_se_uso(self):
-        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        entrada = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
         DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
-        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
+        salida = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
         DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=8)
         self.entrar("bodeguero")
         self.client.post(reverse("movimientos:eliminar", args=[entrada.pk]))
@@ -87,16 +88,16 @@ class MovimientosCrudTests(TestCase):
         self.assertEqual(self.lote.stock_actual(), 2)
 
     def test_eliminar_movimiento_sin_problema(self):
-        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        entrada = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
         DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
         self.entrar("bodeguero")
         self.client.post(reverse("movimientos:eliminar", args=[entrada.pk]))
         self.assertFalse(Movimiento.objects.filter(pk=entrada.pk).exists())
 
     def test_editar_una_entrada_no_puede_dejar_stock_negativo(self):
-        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        entrada = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
         d = DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
-        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
+        salida = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
         DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=8)
         self.entrar("bodeguero")
         datos = self.datos("ENTRADA", 3)
@@ -123,9 +124,9 @@ class MovimientosCrudTests(TestCase):
         self.assertEqual(self.client.get(reverse("almacenes:crear")).status_code, 200)
 
     def test_filtros_de_la_lista(self):
-        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA", mov_observacion="compra")
+        entrada = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA", mov_observacion="compra")
         DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
-        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 5), mov_tipo="SALIDA", mov_observacion="venta")
+        salida = Movimiento.objects.create(fk_usu=self.bodeguero, mov_fecha=date(2026, 10, 5), mov_tipo="SALIDA", mov_observacion="venta")
         DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=2)
         self.entrar("bodeguero")
         url = reverse("movimientos:lista")
@@ -144,3 +145,19 @@ class MovimientosCrudTests(TestCase):
         self.entrar("jefe")
         self.client.post(reverse("logout"))
         self.assertEqual(self.client.get(reverse("inicio")).status_code, 302)
+
+    def test_el_movimiento_guarda_quien_lo_registro(self):
+        self.entrar("bodeguero")
+        self.client.post(reverse("movimientos:crear"), self.datos("ENTRADA", 5))
+        self.assertEqual(Movimiento.objects.get().fk_usu.username, "bodeguero")
+
+    def test_los_permisos_salen_del_rol(self):
+        usuario = get_user_model().objects.create_user("nuevo", password="Inventario2026", usu_rol="JEFE")
+        self.assertTrue(usuario.has_perm("articulos.add_articulo"))
+        self.assertFalse(usuario.has_perm("movimientos.add_movimiento"))
+        usuario = get_user_model().objects.get(pk=usuario.pk)
+        usuario.usu_rol = "BODEGUERO"
+        usuario.save()
+        usuario = get_user_model().objects.get(pk=usuario.pk)
+        self.assertTrue(usuario.has_perm("movimientos.add_movimiento"))
+        self.assertFalse(usuario.has_perm("articulos.add_articulo"))

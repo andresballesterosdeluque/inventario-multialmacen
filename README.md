@@ -54,8 +54,9 @@ Cada tabla del diagrama es un modelo y está en su propia app, dentro de la carp
 | `tbl_categoria` | Categoria (categorias) | Para clasificar los artículos | `pk_cat_id`, `cat_nombre` |
 | `tbl_articulo` | Articulo (articulos) | Los productos | `pk_art_id`, `fk_cat_id`, `art_codigo`, `art_nombre`, `art_unidad` |
 | `tbl_lote` | Lote (lotes) | Los lotes de cada artículo | `pk_lot_id`, `fk_art_id`, `fk_ubi_id`, `lot_codigo`, `lot_fecha_vencimiento` |
-| `tbl_movimiento` | Movimiento (movimientos) | Las entradas y salidas | `pk_mov_id`, `mov_fecha`, `mov_tipo`, `mov_observacion` |
+| `tbl_movimiento` | Movimiento (movimientos) | Las entradas y salidas | `pk_mov_id`, `mov_fecha`, `mov_tipo`, `mov_observacion`, `fk_usu_id` |
 | `tbl_detalle_movimiento` | DetalleMovimiento (detalles_movimiento) | Une cada movimiento con sus lotes y guarda la cantidad | `pk_det_id`, `fk_mov_id`, `fk_lot_id`, `det_cantidad` |
+| `tbl_usuario` | Usuario (usuarios) | Los usuarios del sistema. Los tres actores están en esta sola tabla y se distinguen por el rol | `pk_usu_id`, `username`, `password`, `first_name`, `last_name`, `email`, `usu_rol` y los demás campos de usuario de Django |
 
 Relaciones:
 
@@ -63,6 +64,7 @@ Relaciones:
 - Una ubicación guarda muchos lotes.
 - Una categoría tiene muchos artículos.
 - Un artículo tiene muchos lotes.
+- Un usuario registra muchos movimientos (cada movimiento guarda quién lo registró).
 - Un movimiento puede tener muchos lotes y un lote puede estar en muchos movimientos. Esto se resuelve con la tabla intermedia `tbl_detalle_movimiento`.
 
 El stock no se guarda en una columna. Se calcula sumando las entradas y restando las salidas de cada lote.
@@ -95,7 +97,7 @@ Validaciones y mensajes:
 
 ## Roles y permisos
 
-Cada usuario tiene un rol (grupo de Django) y solo ve las opciones que puede usar. Si entra a una ruta sin permiso, sale un error 403.
+Cada usuario tiene un rol, guardado en la columna `usu_rol` de `tbl_usuario` (Administrador, Jefe de bodega o Bodeguero), y solo ve las opciones que puede usar. Si entra a una ruta sin permiso, sale un error 403.
 
 | Rol | Puede crear, editar y eliminar | Solo consulta |
 |---|---|---|
@@ -103,7 +105,9 @@ Cada usuario tiene un rol (grupo de Django) y solo ve las opciones que puede usa
 | Jefe de bodega | Categorías, artículos y lotes | Almacenes, ubicaciones y movimientos |
 | Bodeguero | Movimientos (con sus detalles) | Lotes, artículos, ubicaciones, almacenes y categorías |
 
-Los roles se crean con `python manage.py crear_roles` (también lo hace `cargar_demo`).
+Lo que puede hacer cada rol está definido en `apps/usuarios/permisos.py`. Las vistas lo revisan con `PermissionRequiredMixin` y con el decorador `@permission_required`, y el menú con `{{ perms }}`.
+
+Los usuarios de prueba se crean con `python manage.py crear_usuarios` (también lo hace `cargar_demo`). El administrador puede crear más usuarios y cambiarles el rol desde `/admin/`.
 
 ## Panel de administración
 
@@ -166,7 +170,7 @@ Todos tienen la contraseña `Inventario2026`.
 | jefe | Jefe de bodega |
 | bodeguero | Bodeguero |
 
-La base de datos (`auth_user`, `auth_group`) guarda los usuarios y roles de Django; no forman parte del diagrama entidad-relación del negocio, que no cambió.
+Los usuarios están en la tabla `tbl_usuario`, que aparece en el diagrama entidad-relación.
 
 ## Diagramas
 
@@ -188,6 +192,7 @@ Todas las apps están dentro de la carpeta `apps/`.
 inventario-multialmacen/
 ├── config/                   # settings.py, urls.py, vista de inicio
 ├── apps/
+│   ├── usuarios/             # modelo Usuario (con el rol) y los permisos de cada rol
 │   ├── almacenes/            # modelo Almacen, vistas, formularios y rutas
 │   ├── ubicaciones/          # modelo Ubicacion (entidad débil de Almacen)
 │   ├── categorias/           # modelo Categoria

@@ -15,6 +15,7 @@
     <div><dt>Fecha</dt><dd>{{ movimiento.mov_fecha|date:"d/m/Y" }}</dd></div>
     <div><dt>Tipo</dt><dd>{% if movimiento.mov_tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</dd></div>
     <div><dt>Total de unidades</dt><dd>{{ total }}</dd></div>
+    <div><dt>Registrado por</dt><dd>{{ movimiento.fk_usu }}</dd></div>
     <div style="grid-column:1/-1"><dt>Observación</dt><dd>{{ movimiento.mov_observacion|default:"Sin observación" }}</dd></div>
   </dl>
 </div>

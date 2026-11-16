@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.usuarios',
     'apps.almacenes',
     'apps.ubicaciones',
     'apps.categorias',
@@ -129,6 +130,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
 # Inicio y cierre de sesión
+# Usuarios: tabla propia (tbl_usuario) con el rol, y permisos según ese rol
+AUTH_USER_MODEL = 'usuarios.Usuario'
+AUTHENTICATION_BACKENDS = ['apps.usuarios.permisos.RolBackend']
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'inicio'
 LOGOUT_REDIRECT_URL = 'login'

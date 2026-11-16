@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -18,6 +19,10 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        # primero los usuarios, porque cada movimiento guarda quién lo registró
+        call_command("crear_usuarios", stdout=self.stdout)
+        bodeguero = get_user_model().objects.get(username="bodeguero")
+
         norte, _ = Almacen.objects.get_or_create(alm_nombre="Norte", defaults={"alm_direccion": "Calle 10 #5-20"})
         sur, _ = Almacen.objects.get_or_create(alm_nombre="Sur", defaults={"alm_direccion": "Carrera 15 #8-30"})
         central, _ = Almacen.objects.get_or_create(alm_nombre="Central", defaults={"alm_direccion": "Avenida 1 #12-45"})
@@ -43,15 +48,17 @@ class Command(BaseCommand):
         l3, _ = Lote.objects.get_or_create(lot_codigo="L-003", fk_art=resma, defaults={"fk_ubi": u3})
 
         m1, c1 = Movimiento.objects.get_or_create(
-            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra inicial de martillos")
+            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra inicial de martillos",
+            defaults={"fk_usu": bodeguero})
         m2, c2 = Movimiento.objects.get_or_create(
-            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra de aceite")
+            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra de aceite",
+            defaults={"fk_usu": bodeguero})
         m3, c3 = Movimiento.objects.get_or_create(
-            mov_fecha=date(2026, 10, 21), mov_tipo="SALIDA", mov_observacion="Despacho de martillos")
+            mov_fecha=date(2026, 10, 21), mov_tipo="SALIDA", mov_observacion="Despacho de martillos",
+            defaults={"fk_usu": bodeguero})
 
         DetalleMovimiento.objects.get_or_create(fk_mov=m1, fk_lot=l1, defaults={"det_cantidad": 50})
         DetalleMovimiento.objects.get_or_create(fk_mov=m2, fk_lot=l2, defaults={"det_cantidad": 30})
         DetalleMovimiento.objects.get_or_create(fk_mov=m3, fk_lot=l1, defaults={"det_cantidad": 10})
 
-        call_command("crear_roles", stdout=self.stdout)
         self.stdout.write(self.style.SUCCESS("Datos de demostración cargados."))
