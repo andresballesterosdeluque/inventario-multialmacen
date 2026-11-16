@@ -16,10 +16,26 @@ Es un sistema hecho en Django para llevar el control de los productos que entran
 
 ## Tecnologías
 
-- Python 3.14
-- Django 6.1.2
-- Bootstrap 5.3.3, cargado por CDN en `templates/base.html` (con los colores de InvenLote en `static/invenlote/app.css`)
-- SQLite (el archivo `db.sqlite3` ya viene con datos de prueba)
+![Python](https://img.shields.io/badge/Python-3.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-6.1.2-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![Universidad](https://img.shields.io/badge/Universidad-de_La_Guajira-007A33?style=for-the-badge)
+
+El proyecto funciona con estas versiones:
+
+- **Python:** 3.14
+- **Django:** 6.1.2
+- **Bootstrap:** 5.3.3, cargado por CDN en `templates/base.html` (con los colores de InvenLote en `static/invenlote/app.css`)
+- **Base de datos:** SQLite 3 (el archivo `db.sqlite3` ya viene con datos de prueba)
+
+### Librerías del entorno (`requirements.txt`)
+
+- `Django==6.1.2`
+- `asgiref==3.12.1` (la instala Django)
+- `sqlparse==0.6.0` (la instala Django)
+- `tzdata==2026.5` (zonas horarias en Windows)
 
 ## Quién usa el sistema
 
