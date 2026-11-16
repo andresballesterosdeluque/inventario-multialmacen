@@ -45,7 +45,7 @@ El proyecto funciona con estas versiones:
 
 ## Tablas principales
 
-Cada tabla del diagrama es un modelo y está en su propia app:
+Cada tabla del diagrama es un modelo y está en su propia app, dentro de la carpeta `apps/`:
 
 | App | Modelo | Para qué sirve |
 |---|---|---|
@@ -182,20 +182,23 @@ Entidad-relación (`docs/diagrama_er.png`):
 
 ## Carpetas
 
+Todas las apps están dentro de la carpeta `apps/`.
+
 ```
 inventario-multialmacen/
-├── config/               # settings.py, urls.py
-├── almacenes/            # modelo Almacen, vistas, formularios y rutas
-├── ubicaciones/          # modelo Ubicacion (entidad débil de Almacen)
-├── categorias/           # modelo Categoria
-├── articulos/            # modelo Articulo
-├── lotes/                # modelo Lote (entidad débil de Articulo)
-├── movimientos/          # modelo Movimiento
-├── detalles_movimiento/  # modelo DetalleMovimiento (tabla intermedia del N:M)
-├── docs/                 # diagramas: diagrama_actores.png y diagrama_er.png
-├── templates/            # base.html, inicio, login y las pantallas de cada app
-├── static/invenlote/     # CSS de la marca y JavaScript del formulario de movimientos
-├── db.sqlite3            # base de datos con los datos de prueba
+├── config/                   # settings.py, urls.py, vista de inicio
+├── apps/
+│   ├── almacenes/            # modelo Almacen, vistas, formularios y rutas
+│   ├── ubicaciones/          # modelo Ubicacion (entidad débil de Almacen)
+│   ├── categorias/           # modelo Categoria
+│   ├── articulos/            # modelo Articulo
+│   ├── lotes/                # modelo Lote (entidad débil de Articulo)
+│   ├── movimientos/          # modelo Movimiento y el CRUD principal
+│   └── detalles_movimiento/  # modelo DetalleMovimiento (tabla intermedia del N:M)
+├── templates/                # base.html, inicio, login y las pantallas de cada app
+├── static/invenlote/         # CSS de la marca y JavaScript del formulario de movimientos
+├── docs/                     # diagramas: diagrama_actores.png y diagrama_er.png
+├── db.sqlite3                # base de datos con los datos de prueba
 ├── manage.py
 ├── requirements.txt
 └── README.md

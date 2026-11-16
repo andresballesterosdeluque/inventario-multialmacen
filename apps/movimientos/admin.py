@@ -1,6 +1,6 @@
 ﻿from django.contrib import admin
 
-from detalles_movimiento.admin import DetalleMovimientoInline
+from apps.detalles_movimiento.admin import DetalleMovimientoInline
 from .models import Movimiento
 
 

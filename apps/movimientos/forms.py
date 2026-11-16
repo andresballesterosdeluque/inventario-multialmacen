@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from almacenes.models import Almacen
+from apps.almacenes.models import Almacen
 from config.forms import BootstrapFormMixin
 
 from .models import Movimiento

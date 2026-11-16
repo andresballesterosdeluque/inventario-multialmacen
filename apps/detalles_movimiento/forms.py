@@ -4,8 +4,8 @@ from django.db.models import Sum
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 
 from config.forms import BootstrapFormMixin
-from lotes.models import Lote
-from movimientos.models import Movimiento
+from apps.lotes.models import Lote
+from apps.movimientos.models import Movimiento
 
 from .models import DetalleMovimiento
 

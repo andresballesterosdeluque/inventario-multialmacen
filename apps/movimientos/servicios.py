@@ -1,8 +1,8 @@
 """Lo que hace falta para guardar y borrar movimientos sin dejar el stock en negativo."""
 from django.db import transaction
 
-from detalles_movimiento.models import DetalleMovimiento
-from lotes.models import Lote
+from apps.detalles_movimiento.models import DetalleMovimiento
+from apps.lotes.models import Lote
 
 
 class StockNegativo(Exception):

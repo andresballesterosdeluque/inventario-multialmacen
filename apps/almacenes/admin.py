@@ -1,6 +1,6 @@
 ﻿from django.contrib import admin
 
-from ubicaciones.models import Ubicacion
+from apps.ubicaciones.models import Ubicacion
 from .models import Almacen
 
 

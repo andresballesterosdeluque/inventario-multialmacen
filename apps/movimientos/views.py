@@ -5,8 +5,8 @@ from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from detalles_movimiento.forms import DetalleFormSet
-from detalles_movimiento.models import DetalleMovimiento
+from apps.detalles_movimiento.forms import DetalleFormSet
+from apps.detalles_movimiento.models import DetalleMovimiento
 
 from .forms import FiltroMovimientoForm, MovimientoForm
 from .models import Movimiento

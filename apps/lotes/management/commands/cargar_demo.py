@@ -4,13 +4,13 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from almacenes.models import Almacen
-from articulos.models import Articulo
-from categorias.models import Categoria
-from detalles_movimiento.models import DetalleMovimiento
-from lotes.models import Lote
-from movimientos.models import Movimiento
-from ubicaciones.models import Ubicacion
+from apps.almacenes.models import Almacen
+from apps.articulos.models import Articulo
+from apps.categorias.models import Categoria
+from apps.detalles_movimiento.models import DetalleMovimiento
+from apps.lotes.models import Lote
+from apps.movimientos.models import Movimiento
+from apps.ubicaciones.models import Ubicacion
 
 
 class Command(BaseCommand):

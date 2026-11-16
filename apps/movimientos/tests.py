@@ -5,12 +5,12 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
-from almacenes.models import Almacen
-from articulos.models import Articulo
-from categorias.models import Categoria
-from detalles_movimiento.models import DetalleMovimiento
-from lotes.models import Lote
-from ubicaciones.models import Ubicacion
+from apps.almacenes.models import Almacen
+from apps.articulos.models import Articulo
+from apps.categorias.models import Categoria
+from apps.detalles_movimiento.models import DetalleMovimiento
+from apps.lotes.models import Lote
+from apps.ubicaciones.models import Ubicacion
 
 from .models import Movimiento
 

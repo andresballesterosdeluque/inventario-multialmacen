@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
-from almacenes.models import Almacen
-from articulos.models import Articulo
-from lotes.models import Lote
-from movimientos.models import Movimiento
+from apps.almacenes.models import Almacen
+from apps.articulos.models import Articulo
+from apps.lotes.models import Lote
+from apps.movimientos.models import Movimiento
 
 
 @login_required
