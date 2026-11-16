@@ -8,4 +8,4 @@ from .models import Ubicacion
 class UbicacionForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Ubicacion
-        fields = ('almacen', 'estante', 'nivel',)
+        fields = ('fk_alm', 'ubi_estante', 'ubi_nivel',)

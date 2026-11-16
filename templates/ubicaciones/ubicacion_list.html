@@ -11,7 +11,7 @@
       <tbody>
         {% for obj in object_list %}
         <tr>
-          <td class="fw-medium">{{ obj.almacen.nombre }}</td><td>{{ obj.estante }}</td><td>{{ obj.nivel|default:"—" }}</td>
+          <td class="fw-medium">{{ obj.fk_alm.alm_nombre }}</td><td>{{ obj.ubi_estante }}</td><td>{{ obj.ubi_nivel|default:"—" }}</td>
           <td class="text-end">
             {% url 'ubicaciones:editar' obj.pk as url_editar %}{% url 'ubicaciones:eliminar' obj.pk as url_eliminar %}
             {% include "includes/acciones_fila.html" with url_editar=url_editar url_eliminar=url_eliminar puede_editar=perms.ubicaciones.change_ubicacion puede_eliminar=perms.ubicaciones.delete_ubicacion %}

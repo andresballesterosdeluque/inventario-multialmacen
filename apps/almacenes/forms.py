@@ -8,4 +8,4 @@ from .models import Almacen
 class AlmacenForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Almacen
-        fields = ('nombre', 'direccion',)
+        fields = ('alm_nombre', 'alm_direccion',)

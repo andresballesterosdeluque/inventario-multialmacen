@@ -12,10 +12,10 @@
 
 <div class="card mb-3">
   <dl class="ficha mb-0">
-    <div><dt>Fecha</dt><dd>{{ movimiento.fecha|date:"d/m/Y" }}</dd></div>
-    <div><dt>Tipo</dt><dd>{% if movimiento.tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</dd></div>
+    <div><dt>Fecha</dt><dd>{{ movimiento.mov_fecha|date:"d/m/Y" }}</dd></div>
+    <div><dt>Tipo</dt><dd>{% if movimiento.mov_tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</dd></div>
     <div><dt>Total de unidades</dt><dd>{{ total }}</dd></div>
-    <div style="grid-column:1/-1"><dt>Observación</dt><dd>{{ movimiento.observacion|default:"Sin observación" }}</dd></div>
+    <div style="grid-column:1/-1"><dt>Observación</dt><dd>{{ movimiento.mov_observacion|default:"Sin observación" }}</dd></div>
   </dl>
 </div>
 
@@ -27,9 +27,9 @@
       <tbody>
         {% for d in filas %}
         <tr>
-          <td>{{ d.lote.codigo }}</td><td>{{ d.lote.articulo.nombre }}</td>
-          <td>{{ d.lote.ubicacion.almacen.nombre }}</td><td>{{ d.lote.ubicacion }}</td>
-          <td class="text-end">{{ d.cantidad }}</td><td class="text-end">{{ d.lote.stock_actual }}</td>
+          <td>{{ d.fk_lot.lot_codigo }}</td><td>{{ d.fk_lot.fk_art.art_nombre }}</td>
+          <td>{{ d.fk_lot.fk_ubi.fk_alm.alm_nombre }}</td><td>{{ d.fk_lot.fk_ubi }}</td>
+          <td class="text-end">{{ d.det_cantidad }}</td><td class="text-end">{{ d.fk_lot.stock_actual }}</td>
         </tr>
         {% endfor %}
       </tbody>

@@ -14,10 +14,10 @@ class ArticuloLista(PermissionRequiredMixin, BusquedaMixin, ListView):
 
     model = Articulo
     permission_required = "articulos.view_articulo"
-    campos_busqueda = ('codigo', 'nombre', 'categoria__nombre',)
+    campos_busqueda = ('art_codigo', 'art_nombre', 'fk_cat__cat_nombre',)
     paginate_by = 10
 
-    queryset = Articulo.objects.select_related('categoria').order_by('codigo')
+    queryset = Articulo.objects.select_related('fk_cat').order_by('art_codigo')
 
 
 class ArticuloCrear(PermissionRequiredMixin, SuccessMessageMixin, CreateView):

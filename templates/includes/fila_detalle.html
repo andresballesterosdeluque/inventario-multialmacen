@@ -2,14 +2,14 @@
 <div class="fila-detalle" {% if f.DELETE.value %}hidden{% endif %}>
   {% for h in f.hidden_fields %}{{ h }}{% endfor %}
   <div>
-    <label class="visually-hidden" for="{{ f.lote.id_for_label }}">Lote</label>
-    {{ f.lote }}
-    {% for e in f.lote.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
+    <label class="visually-hidden" for="{{ f.fk_lot.id_for_label }}">Lote</label>
+    {{ f.fk_lot }}
+    {% for e in f.fk_lot.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
   </div>
   <div>
-    <label class="visually-hidden" for="{{ f.cantidad.id_for_label }}">Cantidad</label>
-    {{ f.cantidad }}
-    {% for e in f.cantidad.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
+    <label class="visually-hidden" for="{{ f.det_cantidad.id_for_label }}">Cantidad</label>
+    {{ f.det_cantidad }}
+    {% for e in f.det_cantidad.errors %}<div class="texto-error">{{ e }}</div>{% endfor %}
   </div>
   <div>
     <button type="button" class="btn btn-texto btn-quitar" aria-label="Quitar este artículo">{% include "includes/icono.html" with nombre="trash" %}Quitar</button>

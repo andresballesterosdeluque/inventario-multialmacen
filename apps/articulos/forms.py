@@ -8,4 +8,4 @@ from .models import Articulo
 class ArticuloForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Articulo
-        fields = ('categoria', 'codigo', 'nombre', 'unidad',)
+        fields = ('fk_cat', 'art_codigo', 'art_nombre', 'art_unidad',)

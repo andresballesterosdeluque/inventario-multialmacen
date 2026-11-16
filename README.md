@@ -45,17 +45,17 @@ El proyecto funciona con estas versiones:
 
 ## Tablas principales
 
-Cada tabla del diagrama es un modelo y está en su propia app, dentro de la carpeta `apps/`:
+Cada tabla del diagrama es un modelo y está en su propia app, dentro de la carpeta `apps/`. Los modelos usan la misma convención de nombres del diagrama entidad-relación: tablas con `tbl_`, llave primaria con `pk_`, llaves foráneas con `fk_` y las demás columnas con el prefijo de su tabla.
 
-| App | Modelo | Para qué sirve |
-|---|---|---|
-| almacenes | Almacen | Las bodegas de la empresa |
-| ubicaciones | Ubicacion | Los estantes de cada almacén |
-| categorias | Categoria | Para clasificar los artículos |
-| articulos | Articulo | Los productos |
-| lotes | Lote | Los lotes de cada artículo |
-| movimientos | Movimiento | Las entradas y salidas |
-| detalles_movimiento | DetalleMovimiento | Une cada movimiento con sus lotes y guarda la cantidad |
+| Tabla | Modelo (app) | Descripción | Columnas |
+| --- | --- | --- | --- |
+| `tbl_almacen` | Almacen (almacenes) | Las bodegas de la empresa | `pk_alm_id`, `alm_nombre`, `alm_direccion` |
+| `tbl_ubicacion` | Ubicacion (ubicaciones) | Los estantes de cada almacén | `pk_ubi_id`, `fk_alm_id`, `ubi_estante`, `ubi_nivel` |
+| `tbl_categoria` | Categoria (categorias) | Para clasificar los artículos | `pk_cat_id`, `cat_nombre` |
+| `tbl_articulo` | Articulo (articulos) | Los productos | `pk_art_id`, `fk_cat_id`, `art_codigo`, `art_nombre`, `art_unidad` |
+| `tbl_lote` | Lote (lotes) | Los lotes de cada artículo | `pk_lot_id`, `fk_art_id`, `fk_ubi_id`, `lot_codigo`, `lot_fecha_vencimiento` |
+| `tbl_movimiento` | Movimiento (movimientos) | Las entradas y salidas | `pk_mov_id`, `mov_fecha`, `mov_tipo`, `mov_observacion` |
+| `tbl_detalle_movimiento` | DetalleMovimiento (detalles_movimiento) | Une cada movimiento con sus lotes y guarda la cantidad | `pk_det_id`, `fk_mov_id`, `fk_lot_id`, `det_cantidad` |
 
 Relaciones:
 
@@ -63,7 +63,7 @@ Relaciones:
 - Una ubicación guarda muchos lotes.
 - Una categoría tiene muchos artículos.
 - Un artículo tiene muchos lotes.
-- Un movimiento puede tener muchos lotes y un lote puede estar en muchos movimientos. Esto se resuelve con la tabla DetalleMovimiento.
+- Un movimiento puede tener muchos lotes y un lote puede estar en muchos movimientos. Esto se resuelve con la tabla intermedia `tbl_detalle_movimiento`.
 
 El stock no se guarda en una columna. Se calcula sumando las entradas y restando las salidas de cada lote.
 

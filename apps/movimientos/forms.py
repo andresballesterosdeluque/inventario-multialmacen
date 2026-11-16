@@ -13,21 +13,20 @@ class MovimientoForm(BootstrapFormMixin, forms.ModelForm):
 
     class Meta:
         model = Movimiento
-        fields = ("fecha", "tipo", "observacion")
+        fields = ("mov_fecha", "mov_tipo", "mov_observacion")
         widgets = {
-            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
-            "observacion": forms.TextInput(
+            "mov_fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "mov_observacion": forms.TextInput(
                 attrs={"placeholder": "Opcional: motivo, proveedor, número de guía…"}
             ),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["tipo"].choices = [("", "Elige el tipo…")] + Movimiento.TIPOS
-        self.fields["observacion"].label = "Observación"
+        self.fields["mov_tipo"].choices = [("", "Elige el tipo…")] + Movimiento.TIPOS
 
-    def clean_fecha(self):
-        fecha = self.cleaned_data["fecha"]
+    def clean_mov_fecha(self):
+        fecha = self.cleaned_data["mov_fecha"]
         if fecha > timezone.localdate():
             raise ValidationError("La fecha no puede ser futura.")
         return fecha
@@ -47,7 +46,7 @@ class FiltroMovimientoForm(BootstrapFormMixin, forms.Form):
     almacen = forms.ModelChoiceField(
         label="Almacén",
         required=False,
-        queryset=Almacen.objects.order_by("nombre"),
+        queryset=Almacen.objects.order_by("alm_nombre"),
         empty_label="Todos",
     )
     desde = forms.DateField(

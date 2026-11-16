@@ -19,10 +19,10 @@ class AlmacenLista(PermissionRequiredMixin, BusquedaMixin, ListView):
 
     model = Almacen
     permission_required = "almacenes.view_almacen"
-    campos_busqueda = ('nombre', 'direccion',)
+    campos_busqueda = ('alm_nombre', 'alm_direccion',)
     paginate_by = 10
 
-    queryset = Almacen.objects.annotate(total_ubicaciones=Count('ubicaciones')).order_by('nombre')
+    queryset = Almacen.objects.annotate(total_ubicaciones=Count('ubicaciones')).order_by('alm_nombre')
 
 
 class AlmacenCrear(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -52,16 +52,16 @@ class AlmacenEliminar(PermissionRequiredMixin, EliminarProtegidoMixin, DeleteVie
 @permission_required("almacenes.view_almacen", raise_exception=True)
 def stock(request):
     """Stock actual de cada lote, agrupado por almacén."""
-    todos = Almacen.objects.order_by("nombre")
+    todos = Almacen.objects.order_by("alm_nombre")
     elegido = request.GET.get("almacen", "")
     almacenes = todos.filter(pk=elegido) if elegido.isdigit() else todos
 
     grupos = []
     for almacen in almacenes:
         lotes = (
-            Lote.objects.filter(ubicacion__almacen=almacen)
-            .select_related("articulo", "ubicacion")
-            .order_by("articulo__nombre", "codigo")
+            Lote.objects.filter(fk_ubi__fk_alm=almacen)
+            .select_related("fk_art", "fk_ubi")
+            .order_by("fk_art__art_nombre", "lot_codigo")
         )
         filas = [{"lote": lote, "stock": lote.stock_actual()} for lote in lotes]
         grupos.append({"almacen": almacen, "filas": filas, "total": sum(f["stock"] for f in filas)})

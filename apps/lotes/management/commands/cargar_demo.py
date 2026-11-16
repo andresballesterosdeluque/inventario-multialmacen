@@ -18,40 +18,40 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        norte, _ = Almacen.objects.get_or_create(nombre="Norte", defaults={"direccion": "Calle 10 #5-20"})
-        sur, _ = Almacen.objects.get_or_create(nombre="Sur", defaults={"direccion": "Carrera 15 #8-30"})
-        central, _ = Almacen.objects.get_or_create(nombre="Central", defaults={"direccion": "Avenida 1 #12-45"})
+        norte, _ = Almacen.objects.get_or_create(alm_nombre="Norte", defaults={"alm_direccion": "Calle 10 #5-20"})
+        sur, _ = Almacen.objects.get_or_create(alm_nombre="Sur", defaults={"alm_direccion": "Carrera 15 #8-30"})
+        central, _ = Almacen.objects.get_or_create(alm_nombre="Central", defaults={"alm_direccion": "Avenida 1 #12-45"})
 
-        herr, _ = Categoria.objects.get_or_create(nombre="Herramientas")
-        lub, _ = Categoria.objects.get_or_create(nombre="Lubricantes")
-        pap, _ = Categoria.objects.get_or_create(nombre="Papelería")
+        herr, _ = Categoria.objects.get_or_create(cat_nombre="Herramientas")
+        lub, _ = Categoria.objects.get_or_create(cat_nombre="Lubricantes")
+        pap, _ = Categoria.objects.get_or_create(cat_nombre="Papelería")
 
         martillo, _ = Articulo.objects.get_or_create(
-            codigo="ART-001", defaults={"nombre": "Martillo", "unidad": "unidad", "categoria": herr})
+            art_codigo="ART-001", defaults={"art_nombre": "Martillo", "art_unidad": "unidad", "fk_cat": herr})
         aceite, _ = Articulo.objects.get_or_create(
-            codigo="ART-002", defaults={"nombre": "Aceite 20W50", "unidad": "litro", "categoria": lub})
+            art_codigo="ART-002", defaults={"art_nombre": "Aceite 20W50", "art_unidad": "litro", "fk_cat": lub})
         resma, _ = Articulo.objects.get_or_create(
-            codigo="ART-003", defaults={"nombre": "Resma de papel", "unidad": "paquete", "categoria": pap})
+            art_codigo="ART-003", defaults={"art_nombre": "Resma de papel", "art_unidad": "paquete", "fk_cat": pap})
 
-        u1, _ = Ubicacion.objects.get_or_create(almacen=norte, estante="E1", defaults={"nivel": "1"})
-        u2, _ = Ubicacion.objects.get_or_create(almacen=sur, estante="E2", defaults={"nivel": "1"})
-        u3, _ = Ubicacion.objects.get_or_create(almacen=central, estante="E3", defaults={"nivel": "1"})
+        u1, _ = Ubicacion.objects.get_or_create(fk_alm=norte, ubi_estante="E1", defaults={"ubi_nivel": "1"})
+        u2, _ = Ubicacion.objects.get_or_create(fk_alm=sur, ubi_estante="E2", defaults={"ubi_nivel": "1"})
+        u3, _ = Ubicacion.objects.get_or_create(fk_alm=central, ubi_estante="E3", defaults={"ubi_nivel": "1"})
 
-        l1, _ = Lote.objects.get_or_create(codigo="L-001", articulo=martillo, defaults={"ubicacion": u1})
+        l1, _ = Lote.objects.get_or_create(lot_codigo="L-001", fk_art=martillo, defaults={"fk_ubi": u1})
         l2, _ = Lote.objects.get_or_create(
-            codigo="L-002", articulo=aceite, defaults={"ubicacion": u2, "fecha_vencimiento": date(2027, 6, 6)})
-        l3, _ = Lote.objects.get_or_create(codigo="L-003", articulo=resma, defaults={"ubicacion": u3})
+            lot_codigo="L-002", fk_art=aceite, defaults={"fk_ubi": u2, "lot_fecha_vencimiento": date(2027, 6, 6)})
+        l3, _ = Lote.objects.get_or_create(lot_codigo="L-003", fk_art=resma, defaults={"fk_ubi": u3})
 
         m1, c1 = Movimiento.objects.get_or_create(
-            fecha=date(2026, 10, 20), tipo="ENTRADA", observacion="Compra inicial de martillos")
+            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra inicial de martillos")
         m2, c2 = Movimiento.objects.get_or_create(
-            fecha=date(2026, 10, 20), tipo="ENTRADA", observacion="Compra de aceite")
+            mov_fecha=date(2026, 10, 20), mov_tipo="ENTRADA", mov_observacion="Compra de aceite")
         m3, c3 = Movimiento.objects.get_or_create(
-            fecha=date(2026, 10, 21), tipo="SALIDA", observacion="Despacho de martillos")
+            mov_fecha=date(2026, 10, 21), mov_tipo="SALIDA", mov_observacion="Despacho de martillos")
 
-        DetalleMovimiento.objects.get_or_create(movimiento=m1, lote=l1, defaults={"cantidad": 50})
-        DetalleMovimiento.objects.get_or_create(movimiento=m2, lote=l2, defaults={"cantidad": 30})
-        DetalleMovimiento.objects.get_or_create(movimiento=m3, lote=l1, defaults={"cantidad": 10})
+        DetalleMovimiento.objects.get_or_create(fk_mov=m1, fk_lot=l1, defaults={"det_cantidad": 50})
+        DetalleMovimiento.objects.get_or_create(fk_mov=m2, fk_lot=l2, defaults={"det_cantidad": 30})
+        DetalleMovimiento.objects.get_or_create(fk_mov=m3, fk_lot=l1, defaults={"det_cantidad": 10})
 
         call_command("crear_roles", stdout=self.stdout)
         self.stdout.write(self.style.SUCCESS("Datos de demostración cargados."))

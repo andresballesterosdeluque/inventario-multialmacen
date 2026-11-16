@@ -14,7 +14,7 @@ def _revisar_stock(lotes_ids):
         stock = lote.stock_actual()
         if stock < 0:
             raise StockNegativo(
-                f"El cambio dejaría el lote {lote.codigo} con stock negativo ({stock}). "
+                f"El cambio dejaría el lote {lote.lot_codigo} con stock negativo ({stock}). "
                 "No se guardó nada."
             )
 
@@ -28,20 +28,20 @@ def guardar_movimiento(form, formset):
     lotes_antes = set()
     if form.instance.pk:
         lotes_antes = set(
-            DetalleMovimiento.objects.filter(movimiento=form.instance).values_list("lote_id", flat=True)
+            DetalleMovimiento.objects.filter(fk_mov=form.instance).values_list("fk_lot_id", flat=True)
         )
     with transaction.atomic():
         movimiento = form.save()
         formset.instance = movimiento
         formset.save()
-        lotes_despues = set(movimiento.detallemovimiento_set.values_list("lote_id", flat=True))
+        lotes_despues = set(movimiento.detallemovimiento_set.values_list("fk_lot_id", flat=True))
         _revisar_stock(lotes_antes | lotes_despues)
     return movimiento
 
 
 def eliminar_movimiento(movimiento):
     """Borra el movimiento y sus detalles. Si el stock queda en negativo, lo deshace."""
-    lotes = set(movimiento.detallemovimiento_set.values_list("lote_id", flat=True))
+    lotes = set(movimiento.detallemovimiento_set.values_list("fk_lot_id", flat=True))
     with transaction.atomic():
         movimiento.delete()
         _revisar_stock(lotes)

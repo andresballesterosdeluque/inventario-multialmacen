@@ -1,4 +1,4 @@
-﻿from django.contrib import admin
+from django.contrib import admin
 
 from apps.lotes.models import Lote
 from .models import Articulo
@@ -12,7 +12,7 @@ class LoteInline(admin.TabularInline):
 
 @admin.register(Articulo)
 class ArticuloAdmin(admin.ModelAdmin):
-    list_display = ("codigo", "nombre", "categoria", "unidad", "stock_total")
-    search_fields = ("codigo", "nombre")
-    list_filter = ("categoria", "unidad")
+    list_display = ("art_codigo", "art_nombre", "fk_cat", "art_unidad", "stock_total")
+    search_fields = ("art_codigo", "art_nombre")
+    list_filter = ("fk_cat", "art_unidad")
     inlines = [LoteInline]

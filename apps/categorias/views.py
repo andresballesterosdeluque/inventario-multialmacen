@@ -15,10 +15,10 @@ class CategoriaLista(PermissionRequiredMixin, BusquedaMixin, ListView):
 
     model = Categoria
     permission_required = "categorias.view_categoria"
-    campos_busqueda = ('nombre',)
+    campos_busqueda = ('cat_nombre',)
     paginate_by = 10
 
-    queryset = Categoria.objects.annotate(total_articulos=Count('articulos')).order_by('nombre')
+    queryset = Categoria.objects.annotate(total_articulos=Count('articulos')).order_by('cat_nombre')
 
 
 class CategoriaCrear(PermissionRequiredMixin, SuccessMessageMixin, CreateView):

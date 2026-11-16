@@ -24,9 +24,9 @@
           {% for m in ultimos %}
           <tr>
             <td>{% if perms.movimientos.view_movimiento %}<a href="{% url 'movimientos:detalle' m.pk %}">#{{ m.pk }}</a>{% else %}#{{ m.pk }}{% endif %}</td>
-            <td>{{ m.fecha|date:"d/m/Y" }}</td>
-            <td>{% if m.tipo == "ENTRADA" %}<span class="estado-entrada">Entrada</span>{% else %}<span class="estado-salida">Salida</span>{% endif %}</td>
-            <td class="texto-suave">{{ m.observacion|truncatechars:40 }}</td>
+            <td>{{ m.mov_fecha|date:"d/m/Y" }}</td>
+            <td>{% if m.mov_tipo == "ENTRADA" %}<span class="estado-entrada">Entrada</span>{% else %}<span class="estado-salida">Salida</span>{% endif %}</td>
+            <td class="texto-suave">{{ m.mov_observacion|truncatechars:40 }}</td>
           </tr>
           {% empty %}<tr><td class="vacio">Todavía no hay movimientos.</td></tr>{% endfor %}
         </tbody>
@@ -41,7 +41,7 @@
         <tbody>
           {% for lote in por_vencer %}
           <tr>
-            <td>{{ lote.codigo }}</td><td>{{ lote.articulo.nombre }}</td>
+            <td>{{ lote.lot_codigo }}</td><td>{{ lote.fk_art.art_nombre }}</td>
             <td>{% include "includes/vencimiento.html" %}</td>
           </tr>
           {% empty %}<tr><td class="vacio">No hay lotes por vencer.</td></tr>{% endfor %}

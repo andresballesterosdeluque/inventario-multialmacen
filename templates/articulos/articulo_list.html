@@ -11,7 +11,7 @@
       <tbody>
         {% for obj in object_list %}
         <tr>
-          <td class="fw-medium">{{ obj.codigo }}</td><td>{{ obj.nombre }}</td><td>{{ obj.categoria.nombre }}</td><td>{{ obj.unidad }}</td><td class="text-end">{{ obj.stock_total }}</td>
+          <td class="fw-medium">{{ obj.art_codigo }}</td><td>{{ obj.art_nombre }}</td><td>{{ obj.fk_cat.cat_nombre }}</td><td>{{ obj.art_unidad }}</td><td class="text-end">{{ obj.stock_total }}</td>
           <td class="text-end">
             {% url 'articulos:editar' obj.pk as url_editar %}{% url 'articulos:eliminar' obj.pk as url_eliminar %}
             {% include "includes/acciones_fila.html" with url_editar=url_editar url_eliminar=url_eliminar puede_editar=perms.articulos.change_articulo puede_eliminar=perms.articulos.delete_articulo %}

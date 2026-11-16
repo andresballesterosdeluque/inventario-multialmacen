@@ -1,10 +1,10 @@
-﻿from django.contrib import admin
+from django.contrib import admin
 
 from .models import Lote
 
 
 @admin.register(Lote)
 class LoteAdmin(admin.ModelAdmin):
-    list_display = ("codigo", "articulo", "ubicacion", "fecha_vencimiento", "stock_actual")
-    search_fields = ("codigo", "articulo__nombre")
-    list_filter = ("articulo", "fecha_vencimiento")
+    list_display = ("lot_codigo", "fk_art", "fk_ubi", "lot_fecha_vencimiento", "stock_actual")
+    search_fields = ("lot_codigo", "fk_art__art_nombre")
+    list_filter = ("fk_art", "lot_fecha_vencimiento")

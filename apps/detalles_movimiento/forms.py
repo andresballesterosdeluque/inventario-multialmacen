@@ -15,7 +15,7 @@ class DetalleMovimientoFormSet(BaseInlineFormSet):
 
     def clean(self):
         super().clean()
-        if self.instance.tipo != "SALIDA":
+        if self.instance.mov_tipo != "SALIDA":
             return
 
         pedidos = {}
@@ -23,8 +23,8 @@ class DetalleMovimientoFormSet(BaseInlineFormSet):
             datos = getattr(form, "cleaned_data", None)
             if not datos or datos.get("DELETE"):
                 continue
-            lote = datos.get("lote")
-            cantidad = datos.get("cantidad")
+            lote = datos.get("fk_lot")
+            cantidad = datos.get("det_cantidad")
             if lote and cantidad:
                 pedidos[lote] = pedidos.get(lote, 0) + cantidad
 
@@ -33,8 +33,8 @@ class DetalleMovimientoFormSet(BaseInlineFormSet):
             if self.instance.pk:
                 # Si la salida ya existia, su propia cantidad ya esta descontada
                 previo = DetalleMovimiento.objects.filter(
-                    movimiento=self.instance, lote=lote
-                ).aggregate(t=Sum("cantidad"))["t"] or 0
+                    fk_mov=self.instance, fk_lot=lote
+                ).aggregate(t=Sum("det_cantidad"))["t"] or 0
                 disponible += previo
             if total > disponible:
                 raise ValidationError(
@@ -47,26 +47,27 @@ class LoteChoiceField(forms.ModelChoiceField):
 
     def label_from_instance(self, lote):
         return (
-            f"{lote.codigo} · {lote.articulo.nombre} · "
-            f"{lote.ubicacion.almacen.nombre} · stock {lote.stock_actual()}"
+            f"{lote.lot_codigo} · {lote.fk_art.art_nombre} · "
+            f"{lote.fk_ubi.fk_alm.alm_nombre} · stock {lote.stock_actual()}"
         )
 
 
 class DetalleForm(BootstrapFormMixin, forms.ModelForm):
     """Una fila del movimiento: un lote y la cantidad."""
 
-    lote = LoteChoiceField(
-        queryset=Lote.objects.select_related("articulo", "ubicacion__almacen").order_by("codigo"),
+    fk_lot = LoteChoiceField(
+        label="Lote",
+        queryset=Lote.objects.select_related("fk_art", "fk_ubi__fk_alm").order_by("lot_codigo"),
         empty_label="Elige un lote…",
     )
 
     class Meta:
         model = DetalleMovimiento
-        fields = ("lote", "cantidad")
-        widgets = {"cantidad": forms.NumberInput(attrs={"min": 1})}
+        fields = ("fk_lot", "det_cantidad")
+        widgets = {"det_cantidad": forms.NumberInput(attrs={"min": 1})}
 
-    def clean_cantidad(self):
-        cantidad = self.cleaned_data["cantidad"]
+    def clean_det_cantidad(self):
+        cantidad = self.cleaned_data["det_cantidad"]
         if cantidad < 1:
             raise ValidationError("La cantidad debe ser mayor que cero.")
         return cantidad

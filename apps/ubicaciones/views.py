@@ -14,10 +14,10 @@ class UbicacionLista(PermissionRequiredMixin, BusquedaMixin, ListView):
 
     model = Ubicacion
     permission_required = "ubicaciones.view_ubicacion"
-    campos_busqueda = ('estante', 'nivel', 'almacen__nombre',)
+    campos_busqueda = ('ubi_estante', 'ubi_nivel', 'fk_alm__alm_nombre',)
     paginate_by = 10
 
-    queryset = Ubicacion.objects.select_related('almacen').order_by('almacen__nombre', 'estante')
+    queryset = Ubicacion.objects.select_related('fk_alm').order_by('fk_alm__alm_nombre', 'ubi_estante')
 
 
 class UbicacionCrear(PermissionRequiredMixin, SuccessMessageMixin, CreateView):

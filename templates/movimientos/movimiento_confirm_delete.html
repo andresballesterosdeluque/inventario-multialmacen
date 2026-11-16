@@ -4,8 +4,8 @@
 <div class="encabezado"><h1>Eliminar movimiento #{{ movimiento.pk }}</h1></div>
 <div class="card tarjeta-formulario">
   <div class="card-body">
-    <p>Vas a eliminar la {{ movimiento.get_tipo_display|lower }} del {{ movimiento.fecha|date:"d/m/Y" }} con {{ filas|length }} artículo{{ filas|length|pluralize }}. Esto cambia el stock de los lotes y no se puede deshacer.</p>
-    <ul>{% for d in filas %}<li>{{ d.lote.codigo }} · {{ d.lote.articulo.nombre }} · {{ d.cantidad }} unidades</li>{% endfor %}</ul>
+    <p>Vas a eliminar la {{ movimiento.get_mov_tipo_display|lower }} del {{ movimiento.mov_fecha|date:"d/m/Y" }} con {{ filas|length }} artículo{{ filas|length|pluralize }}. Esto cambia el stock de los lotes y no se puede deshacer.</p>
+    <ul>{% for d in filas %}<li>{{ d.fk_lot.lot_codigo }} · {{ d.fk_lot.fk_art.art_nombre }} · {{ d.det_cantidad }} unidades</li>{% endfor %}</ul>
     <form method="post">
       {% csrf_token %}
       <div class="botones-form">

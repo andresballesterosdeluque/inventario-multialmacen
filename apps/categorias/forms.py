@@ -8,4 +8,4 @@ from .models import Categoria
 class CategoriaForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Categoria
-        fields = ('nombre',)
+        fields = ('cat_nombre',)

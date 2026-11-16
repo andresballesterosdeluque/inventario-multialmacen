@@ -31,9 +31,9 @@
         {% for m in page_obj %}
         <tr>
           <td>#{{ m.pk }}</td>
-          <td>{{ m.fecha|date:"d/m/Y" }}</td>
-          <td>{% if m.tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</td>
-          <td>{{ m.observacion|default:"—" }}</td>
+          <td>{{ m.mov_fecha|date:"d/m/Y" }}</td>
+          <td>{% if m.mov_tipo == "ENTRADA" %}<span class="estado-entrada">{% include "includes/icono.html" with nombre="entrada" %}Entrada</span>{% else %}<span class="estado-salida">{% include "includes/icono.html" with nombre="salida" %}Salida</span>{% endif %}</td>
+          <td>{{ m.mov_observacion|default:"—" }}</td>
           <td class="text-end">{{ m.total_articulos }}</td>
           <td class="text-end">{{ m.total_unidades|default:0 }}</td>
           <td class="text-end">

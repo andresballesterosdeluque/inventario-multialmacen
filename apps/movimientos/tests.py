@@ -19,11 +19,11 @@ class MovimientosCrudTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command("crear_roles", verbosity=0)
-        almacen = Almacen.objects.create(nombre="Norte", direccion="Calle 1")
-        ubicacion = Ubicacion.objects.create(almacen=almacen, estante="E1", nivel="1")
-        categoria = Categoria.objects.create(nombre="Herramientas")
-        articulo = Articulo.objects.create(codigo="A1", nombre="Martillo", unidad="unidad", categoria=categoria)
-        cls.lote = Lote.objects.create(codigo="L1", articulo=articulo, ubicacion=ubicacion)
+        almacen = Almacen.objects.create(alm_nombre="Norte", alm_direccion="Calle 1")
+        ubicacion = Ubicacion.objects.create(fk_alm=almacen, ubi_estante="E1", ubi_nivel="1")
+        categoria = Categoria.objects.create(cat_nombre="Herramientas")
+        articulo = Articulo.objects.create(art_codigo="A1", art_nombre="Martillo", art_unidad="unidad", fk_cat=categoria)
+        cls.lote = Lote.objects.create(lot_codigo="L1", fk_art=articulo, fk_ubi=ubicacion)
 
     def entrar(self, usuario):
         self.client.login(username=usuario, password="Inventario2026")
@@ -31,10 +31,10 @@ class MovimientosCrudTests(TestCase):
     def datos(self, tipo, cantidad, lote=None, fecha="2026-10-01"):
         lote = lote or self.lote
         return {
-            "fecha": fecha, "tipo": tipo, "observacion": "prueba",
+            "mov_fecha": fecha, "mov_tipo": tipo, "mov_observacion": "prueba",
             "detalles-TOTAL_FORMS": "1", "detalles-INITIAL_FORMS": "0",
             "detalles-MIN_NUM_FORMS": "1", "detalles-MAX_NUM_FORMS": "1000",
-            "detalles-0-lote": str(lote.pk), "detalles-0-cantidad": str(cantidad),
+            "detalles-0-fk_lot": str(lote.pk), "detalles-0-det_cantidad": str(cantidad),
         }
 
     def test_anonimo_va_al_login(self):
@@ -64,8 +64,8 @@ class MovimientosCrudTests(TestCase):
     def test_sin_articulos_se_rechaza(self):
         self.entrar("bodeguero")
         datos = self.datos("ENTRADA", 3)
-        datos["detalles-0-lote"] = ""
-        datos["detalles-0-cantidad"] = ""
+        datos["detalles-0-fk_lot"] = ""
+        datos["detalles-0-det_cantidad"] = ""
         r = self.client.post(reverse("movimientos:crear"), datos)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(Movimiento.objects.count(), 0)
@@ -77,33 +77,33 @@ class MovimientosCrudTests(TestCase):
         self.assertEqual(Movimiento.objects.count(), 0)
 
     def test_no_se_borra_una_entrada_que_ya_se_uso(self):
-        entrada = Movimiento.objects.create(fecha=date(2026, 10, 1), tipo="ENTRADA")
-        DetalleMovimiento.objects.create(movimiento=entrada, lote=self.lote, cantidad=10)
-        salida = Movimiento.objects.create(fecha=date(2026, 10, 2), tipo="SALIDA")
-        DetalleMovimiento.objects.create(movimiento=salida, lote=self.lote, cantidad=8)
+        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
+        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
+        DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=8)
         self.entrar("bodeguero")
         self.client.post(reverse("movimientos:eliminar", args=[entrada.pk]))
         self.assertTrue(Movimiento.objects.filter(pk=entrada.pk).exists())
         self.assertEqual(self.lote.stock_actual(), 2)
 
     def test_eliminar_movimiento_sin_problema(self):
-        entrada = Movimiento.objects.create(fecha=date(2026, 10, 1), tipo="ENTRADA")
-        DetalleMovimiento.objects.create(movimiento=entrada, lote=self.lote, cantidad=10)
+        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
         self.entrar("bodeguero")
         self.client.post(reverse("movimientos:eliminar", args=[entrada.pk]))
         self.assertFalse(Movimiento.objects.filter(pk=entrada.pk).exists())
 
     def test_editar_una_entrada_no_puede_dejar_stock_negativo(self):
-        entrada = Movimiento.objects.create(fecha=date(2026, 10, 1), tipo="ENTRADA")
-        d = DetalleMovimiento.objects.create(movimiento=entrada, lote=self.lote, cantidad=10)
-        salida = Movimiento.objects.create(fecha=date(2026, 10, 2), tipo="SALIDA")
-        DetalleMovimiento.objects.create(movimiento=salida, lote=self.lote, cantidad=8)
+        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA")
+        d = DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
+        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 2), mov_tipo="SALIDA")
+        DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=8)
         self.entrar("bodeguero")
         datos = self.datos("ENTRADA", 3)
-        datos.update({"detalles-INITIAL_FORMS": "1", "detalles-0-id": str(d.pk), "detalles-0-movimiento": str(entrada.pk)})
+        datos.update({"detalles-INITIAL_FORMS": "1", "detalles-0-pk_det_id": str(d.pk), "detalles-0-fk_mov": str(entrada.pk)})
         self.client.post(reverse("movimientos:editar", args=[entrada.pk]), datos)
         d.refresh_from_db()
-        self.assertEqual(d.cantidad, 10)
+        self.assertEqual(d.det_cantidad, 10)
 
     def test_jefe_solo_puede_ver_movimientos(self):
         self.entrar("jefe")
@@ -123,10 +123,10 @@ class MovimientosCrudTests(TestCase):
         self.assertEqual(self.client.get(reverse("almacenes:crear")).status_code, 200)
 
     def test_filtros_de_la_lista(self):
-        entrada = Movimiento.objects.create(fecha=date(2026, 10, 1), tipo="ENTRADA", observacion="compra")
-        DetalleMovimiento.objects.create(movimiento=entrada, lote=self.lote, cantidad=10)
-        salida = Movimiento.objects.create(fecha=date(2026, 10, 5), tipo="SALIDA", observacion="venta")
-        DetalleMovimiento.objects.create(movimiento=salida, lote=self.lote, cantidad=2)
+        entrada = Movimiento.objects.create(mov_fecha=date(2026, 10, 1), mov_tipo="ENTRADA", mov_observacion="compra")
+        DetalleMovimiento.objects.create(fk_mov=entrada, fk_lot=self.lote, det_cantidad=10)
+        salida = Movimiento.objects.create(mov_fecha=date(2026, 10, 5), mov_tipo="SALIDA", mov_observacion="venta")
+        DetalleMovimiento.objects.create(fk_mov=salida, fk_lot=self.lote, det_cantidad=2)
         self.entrar("bodeguero")
         url = reverse("movimientos:lista")
         self.assertEqual(len(self.client.get(url, {"tipo": "SALIDA"}).context["page_obj"]), 1)

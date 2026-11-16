@@ -11,7 +11,7 @@
       <tbody>
         {% for obj in object_list %}
         <tr>
-          <td class="fw-medium">{{ obj.nombre }}</td><td class="text-end">{{ obj.total_articulos }}</td>
+          <td class="fw-medium">{{ obj.cat_nombre }}</td><td class="text-end">{{ obj.total_articulos }}</td>
           <td class="text-end">
             {% url 'categorias:editar' obj.pk as url_editar %}{% url 'categorias:eliminar' obj.pk as url_eliminar %}
             {% include "includes/acciones_fila.html" with url_editar=url_editar url_eliminar=url_eliminar puede_editar=perms.categorias.change_categoria puede_eliminar=perms.categorias.delete_categoria %}

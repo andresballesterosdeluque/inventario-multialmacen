@@ -17,10 +17,10 @@ class LoteLista(PermissionRequiredMixin, BusquedaMixin, ListView):
 
     model = Lote
     permission_required = "lotes.view_lote"
-    campos_busqueda = ('codigo', 'articulo__nombre', 'ubicacion__estante', 'ubicacion__almacen__nombre',)
+    campos_busqueda = ('lot_codigo', 'fk_art__art_nombre', 'fk_ubi__ubi_estante', 'fk_ubi__fk_alm__alm_nombre',)
     paginate_by = 10
 
-    queryset = Lote.objects.select_related('articulo', 'ubicacion__almacen').order_by('codigo')
+    queryset = Lote.objects.select_related('fk_art', 'fk_ubi__fk_alm').order_by('lot_codigo')
 
     def get_context_data(self, **kwargs):
         contexto = super().get_context_data(**kwargs)

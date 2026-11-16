@@ -26,28 +26,28 @@ def lista(request):
     if filtro.is_valid():
         datos = filtro.cleaned_data
         if datos["tipo"]:
-            movimientos = movimientos.filter(tipo=datos["tipo"])
+            movimientos = movimientos.filter(mov_tipo=datos["tipo"])
         if datos["desde"]:
-            movimientos = movimientos.filter(fecha__gte=datos["desde"])
+            movimientos = movimientos.filter(mov_fecha__gte=datos["desde"])
         if datos["hasta"]:
-            movimientos = movimientos.filter(fecha__lte=datos["hasta"])
+            movimientos = movimientos.filter(mov_fecha__lte=datos["hasta"])
         if datos["almacen"]:
-            en_almacen = DetalleMovimiento.objects.filter(lote__ubicacion__almacen=datos["almacen"])
-            movimientos = movimientos.filter(pk__in=en_almacen.values("movimiento"))
+            en_almacen = DetalleMovimiento.objects.filter(fk_lot__fk_ubi__fk_alm=datos["almacen"])
+            movimientos = movimientos.filter(pk__in=en_almacen.values("fk_mov"))
         if datos["q"]:
             texto = datos["q"].strip()
             coincide = DetalleMovimiento.objects.filter(
-                Q(lote__codigo__icontains=texto) | Q(lote__articulo__nombre__icontains=texto)
+                Q(fk_lot__lot_codigo__icontains=texto) | Q(fk_lot__fk_art__art_nombre__icontains=texto)
             )
             movimientos = movimientos.filter(
-                Q(observacion__icontains=texto) | Q(pk__in=coincide.values("movimiento"))
+                Q(mov_observacion__icontains=texto) | Q(pk__in=coincide.values("fk_mov"))
             )
 
     # primero se filtra y después se suman los artículos y las unidades de cada movimiento
     movimientos = movimientos.annotate(
         total_articulos=Count("detallemovimiento"),
-        total_unidades=Sum("detallemovimiento__cantidad"),
-    ).order_by("-fecha", "-id")
+        total_unidades=Sum("detallemovimiento__det_cantidad"),
+    ).order_by("-mov_fecha", "-pk")
 
     parametros = request.GET.copy()
     parametros.pop("page", None)
@@ -62,9 +62,9 @@ def detalle(request, pk):
     """Un movimiento con todos sus artículos."""
     movimiento = get_object_or_404(Movimiento, pk=pk)
     filas = movimiento.detallemovimiento_set.select_related(
-        "lote__articulo", "lote__ubicacion__almacen"
-    ).order_by("id")
-    total = filas.aggregate(t=Sum("cantidad"))["t"] or 0
+        "fk_lot__fk_art", "fk_lot__fk_ubi__fk_alm"
+    ).order_by("pk")
+    total = filas.aggregate(t=Sum("det_cantidad"))["t"] or 0
     contexto = {"movimiento": movimiento, "filas": filas, "total": total}
     return render(request, "movimientos/movimiento_detail.html", contexto)
 
@@ -87,7 +87,7 @@ def _formulario(request, movimiento, titulo):
                 messages.success(request, f"Movimiento #{guardado.pk} guardado.")
                 return redirect("movimientos:detalle", pk=guardado.pk)
     else:
-        inicial = {"fecha": timezone.localdate()} if movimiento.pk is None else None
+        inicial = {"mov_fecha": timezone.localdate()} if movimiento.pk is None else None
         form = MovimientoForm(instance=movimiento, initial=inicial)
         formset = DetalleFormSet(instance=movimiento, prefix=PREFIJO)
     contexto = {"form": form, "formset": formset, "titulo": titulo, "movimiento": movimiento}
@@ -120,5 +120,5 @@ def eliminar(request, pk):
             return redirect("movimientos:detalle", pk=pk)
         messages.success(request, "Movimiento eliminado.")
         return redirect("movimientos:lista")
-    filas = movimiento.detallemovimiento_set.select_related("lote__articulo")
+    filas = movimiento.detallemovimiento_set.select_related("fk_lot__fk_art")
     return render(request, "movimientos/movimiento_confirm_delete.html", {"movimiento": movimiento, "filas": filas})

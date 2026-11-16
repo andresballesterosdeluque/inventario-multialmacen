@@ -1,4 +1,4 @@
-﻿from django import forms
+from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 
@@ -21,15 +21,15 @@ class DetalleMovimientoForm(forms.ModelForm):
 
     def clean(self):
         datos = super().clean()
-        movimiento = datos.get("movimiento")
-        lote = datos.get("lote")
-        cantidad = datos.get("cantidad")
-        if movimiento and lote and cantidad and movimiento.tipo == "SALIDA":
+        movimiento = datos.get("fk_mov")
+        lote = datos.get("fk_lot")
+        cantidad = datos.get("det_cantidad")
+        if movimiento and lote and cantidad and movimiento.mov_tipo == "SALIDA":
             disponible = lote.stock_actual()
             if self.instance.pk:
-                previo = DetalleMovimiento.objects.select_related("movimiento").get(pk=self.instance.pk)
-                if previo.movimiento.tipo == "SALIDA" and previo.lote_id == lote.pk:
-                    disponible += previo.cantidad
+                previo = DetalleMovimiento.objects.select_related("fk_mov").get(pk=self.instance.pk)
+                if previo.fk_mov.mov_tipo == "SALIDA" and previo.fk_lot_id == lote.pk:
+                    disponible += previo.det_cantidad
             if cantidad > disponible:
                 raise ValidationError(
                     f"Stock insuficiente en {lote}: disponible {disponible}, solicitado {cantidad}."
@@ -40,6 +40,6 @@ class DetalleMovimientoForm(forms.ModelForm):
 @admin.register(DetalleMovimiento)
 class DetalleMovimientoAdmin(admin.ModelAdmin):
     form = DetalleMovimientoForm
-    list_display = ("movimiento", "lote", "cantidad")
-    search_fields = ("lote__codigo",)
-    list_filter = ("movimiento__tipo",)
+    list_display = ("fk_mov", "fk_lot", "det_cantidad")
+    search_fields = ("fk_lot__lot_codigo",)
+    list_filter = ("fk_mov__mov_tipo",)
