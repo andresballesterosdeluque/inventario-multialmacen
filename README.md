@@ -1,6 +1,4 @@
-# Nombre del sistema
-
-InvenLote · Sistema de inventario multialmacén
+# Sistema de inventario multialmacén (InvenLote)
 
 ## Descripción
 
@@ -11,7 +9,7 @@ Es un sistema hecho en Django para llevar el control de los productos que entran
 ## Integrantes
 
 - Temistocle Eisyanior Atencio Ipuana – temistocle-Atencio-rgb
-- Alain Manuel Suarez Vanegas – (usuario de GitHub por completar)
+- Alain Manuel Suarez Vanegas – alainmanuelsuarezvanegas-dotcom
 - Andrés Felipe Ballesteros De Luquez – andresballesterosdeluque
 
 ## Tecnologías
