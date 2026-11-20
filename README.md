@@ -69,6 +69,18 @@ Relaciones:
 
 El stock no se guarda en una columna. Se calcula sumando las entradas y restando las salidas de cada lote.
 
+## Diagramas
+
+Están en la carpeta `docs/`.
+
+Casos de uso (`docs/diagrama_actores.png`):
+
+![Diagrama de casos de uso](docs/diagrama_actores.png)
+
+Entidad-relación (`docs/diagrama_er.png`):
+
+![Diagrama entidad-relación](docs/diagrama_er.png)
+
 ## Funcionalidades
 
 Interfaz propia (desde `/`, pide iniciar sesión):
@@ -105,18 +117,20 @@ Cada usuario tiene un rol, guardado en la columna `usu_rol` de `tbl_usuario` (Ad
 | Jefe de bodega | Categorías, artículos y lotes | Almacenes, ubicaciones y movimientos |
 | Bodeguero | Movimientos (con sus detalles) | Lotes, artículos, ubicaciones, almacenes y categorías |
 
+El usuario `admin` además es superusuario (lo necesita para entrar a `/admin/` y gestionar usuarios), así que en la práctica puede hacer todo.
+
 Lo que puede hacer cada rol está definido en `apps/usuarios/permisos.py`. Las vistas lo revisan con `PermissionRequiredMixin` y con el decorador `@permission_required`, y el menú con `{{ perms }}`.
 
 Los usuarios de prueba se crean con `python manage.py crear_usuarios` (también lo hace `cargar_demo`). El administrador puede crear más usuarios y cambiarles el rol desde `/admin/`.
 
 ## Panel de administración
 
-- Las 7 tablas están registradas en el admin, con lista, búsqueda y filtros.
+- Las 8 tablas están registradas en el admin (incluida `tbl_usuario`), con lista, búsqueda y filtros.
 - Las ubicaciones se agregan dentro del formulario del almacén, los lotes dentro del artículo y los detalles dentro del movimiento.
 - Cada lote muestra su stock actual y cada artículo su stock total.
 - Si una salida es mayor que el stock del lote, el admin muestra un error y no la guarda.
 
-## Cómo ejecutarlo
+## Cómo ejecutar el proyecto
 
 1. Clonar el repositorio:
 
@@ -166,23 +180,11 @@ Todos tienen la contraseña `Inventario2026`.
 
 | Usuario | Rol |
 |---|---|
-| admin | Administrador (también entra a `/admin/`) |
+| admin | Administrador y superusuario del admin (`/admin/`) |
 | jefe | Jefe de bodega |
 | bodeguero | Bodeguero |
 
 Los usuarios están en la tabla `tbl_usuario`, que aparece en el diagrama entidad-relación.
-
-## Diagramas
-
-Están en la carpeta `docs/`.
-
-Casos de uso (`docs/diagrama_actores.png`):
-
-![Diagrama de casos de uso](docs/diagrama_actores.png)
-
-Entidad-relación (`docs/diagrama_er.png`):
-
-![Diagrama entidad-relación](docs/diagrama_er.png)
 
 ## Carpetas
 
